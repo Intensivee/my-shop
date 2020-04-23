@@ -7,32 +7,42 @@ c = conn.cursor()
 def initialize():
     c.execute(("""
     CREATE TABLE IF NOT EXISTS Customers(
-    id_customer INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    customer_name text NOT NULL,
-    phone text NULL,
-    email text NOT NULL,
+    id_customer   INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    login         TEXT    NOT NULL,
+    password      TEXT    NOT NULL,
+    customer_name TEXT    NOT NULL,
+    phone         TEXT    DEFAULT (0) NOT NULL,
+    email         TEXT    NOT NULL,
+    perm          INT     NOT NULL DEFAULT (0) 
     )"""))
 
     c.execute("""
     CREATE TABLE IF NOT EXISTS Orders(
-    id_order INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    id_customer INTEGER NOT NULL,
-    id_product INTEGER NOT NULL,
-    quantity INTEGER NOT NULL,
-    total_price DOUBLE NOT NULL,
-    payment_status INTEGER NOT NULL,
-    order_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(id_customer) REFERENCES Customers(id_customer) ON DELETE CASCADE ON UPDATE NO ACTION,
-    FOREIGN KEY(id_product) REFERENCES Products(id_product) ON DELETE CASCADE ON UPDATE NO ACTION
+    id_order       INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    id_customer    INTEGER NOT NULL,
+    id_product     INTEGER NOT NULL,
+    quantity       INTEGER NOT NULL,
+    total_price    DOUBLE  NOT NULL,
+    payment_status INTEGER NOT NULL DEFAULT (0),
+    send_status    INTEGER NOT NULL DEFAULT (0),
+    order_date     TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    location       TEXT    NOT NULL,
+    
+    FOREIGN KEY (id_customer) REFERENCES Customers (id_customer) 
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+    FOREIGN KEY (id_product) REFERENCES Products (id_product) 
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
     )""")
 
     c.execute("""
     CREATE TABLE IF NOT EXISTS Products(
-    id_product INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    product_name text NOT NULL,
-    product_price DOUBLE NOT NULL,
-    in_stock INTEGER NOT NULL,
-    description text NULL
+    id_product    INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    product_name  TEXT    NOT NULL,
+    product_price DOUBLE  NOT NULL,
+    in_stock      INTEGER NOT NULL,
+    description   TEXT
     )""")
 
 
