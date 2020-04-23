@@ -1,2 +1,2 @@
-# shop-project-GU
-a
+# shop-project-GUI
+opis
