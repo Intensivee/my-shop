@@ -1,0 +1,46 @@
+import sqlite3                          # importuje biblioteke bazy
+from employee import Employee
+
+# conn = sqlite3.connect('data.db')       # laczy sie z plikiem 'data.db'
+conn = sqlite3.connect(':memory:')          # dzieki temu za każdym razem bedzie tworzył nową baze i niemusimy komentowac np tworzenia bazy
+
+c = conn.cursor()                       # kursor dzieki ktoremy mozemy wysylac komendy do sql
+
+c.execute("CREATE TABLE employees (first text, last text, pay integer )") # można tylko raz wykonać potem blad
+
+c.execute("INSERT INTO employees VALUES ('Corey','Schafer',50000)")
+c.execute("INSERT INTO employees VALUES ('Mary','Schafer',70000)")
+c.execute("SELECT * FROM employees WHERE last='Schafer'")
+print(c.fetchall())
+
+c.fetchone()    #  zwroci kolejny wiersz o parametrach w funkcji SELECT ^
+c.fetchmany(5)
+c.fetchall()
+
+
+emp_1 = Employee('Wojtek','Szafti',10)
+emp_2 = Employee('Marek','Szafteros',100)
+emp_3 = Employee('Alek','ToJa',1000)
+c.execute("INSERT INTO employees VALUES ('{}','{}',{})".format(emp_1.first, emp_1.last, emp_1.pay))   # tak raczej nie robic, niebezpieczne
+c.execute("INSERT INTO employees VALUES (?,?,?)", (emp_2.first, emp_2.last, emp_2.pay))               #tuple, tak mozna
+c.execute("INSERT INTO employees VALUES (:first,:last,:pay)", {'first': emp_3.first, 'last': emp_3.last, 'pay': emp_3.pay} )
+
+
+c.execute("SELECT * FROM employees WHERE last=?", ('Schafer',))     # musimy uzyc tupla i tak, wiec dajemy ten dziwny przecinek ze niby wiecej niz 1
+print(c.fetchall())
+
+c.execute("SELECT * FROM employees WHERE last= :last ", {'last': 'Szafti' })
+print(c.fetchall())
+
+
+def insert_emp(emp):
+    with conn:                  # nie trzeba zamykac pliku ani pisac commit
+        c.execute("INSERT INTO employees VALUES (?,?,?)", (emp.first, emp.last, emp.pay))
+
+def search_by_name(name):
+    c.execute("SELECT * FROM employees WHERE last =:last ", {'last': name})
+    print(c.fetchall())
+
+conn.commit()   #c ommit - wykonuje transakcje (trzeba pisac przy kazdej nowej zamienie w tabeli)
+conn.close()    # - na koniec
+
