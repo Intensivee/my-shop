@@ -1,7 +1,7 @@
 # shop-project-GUI
 example acc:
 
-1. Admin prem
+1. Admin perm
 login: admin
 passsword: admin123
 
