@@ -236,8 +236,6 @@ class CustomersMenu:
 
 
 
-
-
 class ProductsMenu:
     def __init__(self, master):
         self.master = master
@@ -546,13 +544,16 @@ class OrdersMenu:
         self.location_entry.grid(row=5, column=1)
 
         # buttons
-        # search_button = Button(self.frame, text='Search for ID', width=20)
+        search_button = Button(self.entry_frame, text='Search', command=self.search_order, width=20, bg=s.lgg)
+        search_button.grid(row=0, column=2, padx=20)
         add_button = Button(self.entry_frame, text='Add', command=self.add_order, width=20, bg=s.lgg)
-        add_button.grid(row=0, column=2, padx=20)
+        add_button.grid(row=1, column=2, padx=20)
         clear_button = Button(self.entry_frame, text='Clear', command=self.initialize_menu, width=20, bg=s.lgg)
-        clear_button.grid(row=1, column=2)
+        clear_button.grid(row=2, column=2)
+        delete_button = Button(self.entry_frame, text='Delete', command=self.delete_order, width=20, bg=s.lgg)
+        delete_button.grid(row=3, column=2)
         exit_button = Button(self.entry_frame, text='Exit', command=self.master.destroy, width=20, bg=s.lgg)
-        exit_button.grid(row=2, column=2)
+        exit_button.grid(row=4, column=2)
 
         # Listbox'es
         # creating listbox for orders
@@ -632,6 +633,38 @@ class OrdersMenu:
             self.initialize_menu()
         else:
             self.error_message("insufficient number of products on disposal")
+
+    def delete_order(self):
+        if self.error_label:
+            self.error_label.destroy()
+
+        # checking if anything is selected
+        if not self.order_listbox.curselection():
+            self.error_message("please select one from listbox.")
+            return
+
+        # window asking to delete
+        answer = tkinter.messagebox.askquestion('myShop DBMS', 'Delete:\n')
+        if answer == 'yes':
+            # finding selected order
+            index = self.order_listbox.curselection()[0]
+            selected_record = self.order_listbox.get(index)
+            db.deleteOrder(selected_record[0])
+
+            # refreshing all
+            self.initialize_menu()
+
+    def search_order(self):
+        if self.error_label:
+            self.error_label.destroy()
+
+        self.order_listbox.delete(0, END)
+        records = db.searchOrders(self.id_product_entry.get(), self.id_customer_entry.get(), self.quantity_entry.get(),
+                                  self.payment_status_entry.get(), self.location_entry.get())
+        for record in records:
+            self.order_listbox.insert(END, (
+            str(record[0]), str(record[1]), str(record[2]), str(record[3]), str(record[5]), str(record[6]),
+            str(record[7]), record[8]))
 
     def order_list_manager(self, event):
         if self.error_label:

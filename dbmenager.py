@@ -258,3 +258,17 @@ def ordersProductInfo(id):
             (id,))
         rows = c.fetchall()
         return rows
+
+def deleteOrder(id):
+    with conn:
+        c.execute("DELETE FROM Orders WHERE id_order=?", (id,))
+
+
+def searchOrders(id_p='', id_c='', quantity='', send='', loc=''):
+    with conn:
+        c.execute("""SELECT * FROM Orders WHERE id_customer=? OR id_product=? OR quantity=?
+                 OR send_status=? OR location=?""",
+                  (id_p, id_c, quantity, send, loc) )
+    return c.fetchall()
+
+
