@@ -4,6 +4,9 @@ conn = sqlite3.connect('dataa.db')
 c = conn.cursor()
 
 
+
+
+
 def initialize():
     c.execute(("""
     CREATE TABLE IF NOT EXISTS Customers(
@@ -30,10 +33,10 @@ def initialize():
     
     FOREIGN KEY (id_customer) REFERENCES Customers (id_customer) 
     ON DELETE CASCADE
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
     FOREIGN KEY (id_product) REFERENCES Products (id_product) 
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
     )""")
 
     c.execute("""
