@@ -721,6 +721,6 @@ class OrdersMenu:
     def goto_product_window(self):
         self.master.destroy()
         self.master = Tk()
-        app = CustomersMenu(self.master)
+        app = ProductsMenu(self.master)
         self.master.mainloop()
 
