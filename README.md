@@ -28,5 +28,3 @@ password: mojehaslo123
 
 The App is not fully completed:
 - lacks unit testing 
-- lacks 1 functionality in admin
-- not set into modules 
