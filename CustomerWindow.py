@@ -58,14 +58,14 @@ class CustomerApp:
         list_label.grid(row=0, column=0, pady=(10,0))
         scrollbar = Scrollbar(self.function_frame)
         scrollbar.grid(row=1, column=1, sticky='ns')
-        self.listbox = Listbox(self.function_frame, width=60, height=15, yscrollcommand=scrollbar.set, bg=s.lgg)
-        self.listbox.bind('<<ListboxSelect>>', self.select)
-        self.listbox.grid(row=1, column=0, padx=8)
+        self.products_listbox = Listbox(self.function_frame, width=60, height=15, yscrollcommand=scrollbar.set, bg=s.lgg)
+        self.products_listbox.bind('<<ListboxSelect>>', self.product_selection)
+        self.products_listbox.grid(row=1, column=0, padx=8)
 
         # adding records from DB to Listbox
         records = db.returnProducts()
         for record in records:
-            self.listbox.insert(END, (str(record[0]), record[1], str(record[2]), str(record[3])))
+            self.products_listbox.insert(END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
         # crating labels
         id_product_label = Label(self.function_frame2, text='Product ID:', bg=s.bgg)
@@ -134,17 +134,37 @@ class CustomerApp:
         else:
             self.error_message("Product not exist.")
 
-    def select(self, event):
+    def product_selection(self, event):
 
          # will do sth only if the mouse click was on customer listbox
-        if self.listbox.curselection():
-            search = self.listbox.curselection()[0]
-            current_record = self.listbox.get(search)
+        if self.products_listbox.curselection():
+            search = self.products_listbox.curselection()[0]
+            current_record = self.products_listbox.get(search)
 
             self.id_product_entry.delete(0, END)
             self.id_product_entry.insert(END, current_record[0])
 
-        pass
+
+    def order_selection(self, event):
+
+        if self.my_orders_listbox.curselection():
+            search = self.my_orders_listbox.curselection()[0]
+            current_record = self.my_orders_listbox.get(search)
+            record = db.returnOrder(current_record[0])
+
+            if self.function_frame2:
+                 self.function_frame2.destroy()
+
+            self.function_frame2 = Frame(self.master, bg=s.bgg)
+            self.function_frame2.pack(side=TOP)
+
+            # creating Message instead of Label (long)
+            desc = """quantity: \t{}\ntotal_price: \t{}\npayment_status: \t{}\nsend_status: \t{}\noder_date: \t{}\nlocation: \t{}"""\
+                .format(str(record[3]), str(record[4]), str(record[5]), str(record[6]), str(record[7]), str(record[8]))
+
+            self.error_label = Message(self.function_frame2, text="Description:\n{}".format(desc), bg=s.bgg, width=300)
+            self.error_label.grid(row=0, column=0)
+
 
     def acc_edit(self):
         self.master.destroy()
@@ -163,13 +183,14 @@ class CustomerApp:
         list_label.grid(row=0, column=0, pady=(10,0))
         scrollbar = Scrollbar(self.function_frame)
         scrollbar.grid(row=1, column=1, sticky='ns')
-        self.listbox = Listbox(self.function_frame, width=60, height=15, yscrollcommand=scrollbar.set, bg=s.lgg)
-        self.listbox.grid(row=1, column=0, padx=8)
+        self.my_orders_listbox = Listbox(self.function_frame, width=60, height=15, yscrollcommand=scrollbar.set, bg=s.lgg)
+        self.my_orders_listbox.bind('<<ListboxSelect>>', self.order_selection)
+        self.my_orders_listbox.grid(row=1, column=0, padx=8)
 
         # adding records from DB to Listbox
         records = db.ordersProductInfo(s.my_id)
         for record in records:
-            self.listbox.insert(END, (str(record[0]), record[1], str(record[2])))
+            self.my_orders_listbox.insert(END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
     def error_message(self, name):
         # deleting missing label from last add_order call if it exists

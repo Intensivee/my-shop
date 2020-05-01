@@ -254,7 +254,7 @@ def addOrder(id_c, id_p, quantity, location, payment_status=0, send_status=0):
 def ordersProductInfo(id):
     with conn:
         c.execute(
-            "SELECT p.product_name,o.quantity,o.total_price FROM Orders AS o NATURAL JOIN Products AS p WHERE o.id_customer=?",
+            "SELECT o.id_order,p.product_name,o.quantity,o.total_price FROM Orders AS o NATURAL JOIN Products AS p WHERE o.id_customer=?",
             (id,))
         rows = c.fetchall()
         return rows
@@ -272,3 +272,7 @@ def searchOrders(id_p='', id_c='', quantity='', send='', loc=''):
     return c.fetchall()
 
 
+def returnOrder(id_o):
+    with conn:
+        c.execute("SELECT * FROM Orders WHERE id_order=?", (id_o,))
+    return c.fetchone()
