@@ -508,11 +508,11 @@ class OrdersMenu:
             self.error_label.destroy()
 
         # Create Main Buttons To Chose Which Table You Want To Add
-        c_chose_button = Button(self.frame, text='Customer', command=self.goto_product_window, width=30, bg=s.lgg)
+        c_chose_button = Button(self.frame, text='Customer', command=self.goto_customer_window, width=30, bg=s.lgg)
         c_chose_button.grid(row=0, column=0, pady=10)
         o_chose_button = Button(self.frame, text='Order', command=self.initialize_menu, width=30, bg=s.lgg)
         o_chose_button.grid(row=0, column=1, )
-        p_chose_button = Button(self.frame, text='Product', command=self.goto_customer_window, width=30, bg=s.lgg)
+        p_chose_button = Button(self.frame, text='Product', command=self.goto_product_window, width=30, bg=s.lgg)
         p_chose_button.grid(row=0, column=2)
 
         # Create text box labels for Orders
