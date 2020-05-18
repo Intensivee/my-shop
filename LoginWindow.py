@@ -45,7 +45,7 @@ class LoginWindow:
             self.error_label.grid(row=2, column=1)
 
         else:
-            s.my_id, perm = db.customerPerm(self.login_entry.get(), self.password_entry.get())
+            s.my_id, perm = db.customer_perm(self.login_entry.get(), self.password_entry.get())
             if perm == -1 or s.my_id == -1:
                 self.error_label = Label(self.frame, text="try again..", fg='red', bg=s.bgg)
                 self.error_label.grid(row=2, column=1)
@@ -118,8 +118,8 @@ class LoginWindow:
                 self.error_label = Label(self.frame, text="'{}' exists".format(exist), fg='red', bg=s.bgg)
                 self.error_label.grid(row=5, column=1)
             else:
-                db.addCustomer(self.login_entry.get(), self.password_entry.get(), self.name_entry.get(),
-                               self.phone_entry.get(), self.email_entry.get())
+                db.add_customer(self.login_entry.get(), self.password_entry.get(), self.name_entry.get(),
+                                self.phone_entry.get(), self.email_entry.get())
                 self.master.destroy()
                 self.master = Tk()
                 m.app = LoginWindow(self.master)

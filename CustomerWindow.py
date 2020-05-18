@@ -63,7 +63,7 @@ class CustomerApp:
         self.products_listbox.grid(row=1, column=0, padx=8)
 
         # adding records from DB to Listbox
-        records = db.returnProducts()
+        records = db.return_products()
         for record in records:
             self.products_listbox.insert(END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
@@ -102,11 +102,11 @@ class CustomerApp:
             self.error_message("'location' missing")
 
         # checking if customer and product exists
-        elif not db.is_customer_id_exitst(s.my_id) or not db.is_product_id_exists(self.id_product_entry.get()):
+        elif not db.is_customer_id_exist(s.my_id) or not db.is_product_id_exists(self.id_product_entry.get()):
             self.error_message("product or customer id not Exists")
 
         # function itself check if there is enough products, and count total price (quantity*price)
-        elif db.addOrder(s.my_id, self.id_product_entry.get(), self.quantity_entry.get(), self.location_entry.get()):
+        elif db.add_order(s.my_id, self.id_product_entry.get(), self.quantity_entry.get(), self.location_entry.get()):
                 tkinter.messagebox.showinfo("Mendiona bytes", 'successfully added.')
 
                 self.list_products()
@@ -128,7 +128,7 @@ class CustomerApp:
             self.function_frame3.pack(side=TOP)
 
             # creating Message instead of Label (description might be long)
-            description = db.returnProduct(self.id_product_entry.get())[4]
+            description = db.return_product(self.id_product_entry.get())[4]
             self.error_label = Message(self.function_frame3, text="Description: {}".format(description), bg=s.bgg, width=300)
             self.error_label.grid(row=5, column=0)
         else:
@@ -150,7 +150,7 @@ class CustomerApp:
         if self.my_orders_listbox.curselection():
             search = self.my_orders_listbox.curselection()[0]
             current_record = self.my_orders_listbox.get(search)
-            record = db.returnOrder(current_record[0])
+            record = db.return_order(current_record[0])
 
             if self.function_frame2:
                  self.function_frame2.destroy()
@@ -188,7 +188,7 @@ class CustomerApp:
         self.my_orders_listbox.grid(row=1, column=0, padx=8)
 
         # adding records from DB to Listbox
-        records = db.ordersProductInfo(s.my_id)
+        records = db.orders_product_info(s.my_id)
         for record in records:
             self.my_orders_listbox.insert(END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
@@ -258,7 +258,7 @@ class AccEdit:
         self.cancel_button.grid(row=1, column=2)
 
         #getting customer info from DB
-        customerInfo = db.returnCustomer(s.my_id)
+        customerInfo = db.return_customer(s.my_id)
         if customerInfo:
             self.name_entry.insert(END, customerInfo[3])
             self.phone_entry.insert(END, customerInfo[4])
@@ -276,7 +276,7 @@ class AccEdit:
             self.error_message('new password is too short.')
 
         # checking if all required entry's are filled properly
-        elif self.password_entry.get() != db.returnCustomer(s.my_id)[2]:
+        elif self.password_entry.get() != db.return_customer(s.my_id)[2]:
             self.error_message('password does not match.')
         elif self.name_entry.get() == '':
             self.error_message('Can not update empty name.')
@@ -290,10 +290,10 @@ class AccEdit:
 
             if self.new_password_entry != '':
                 # passing new password
-                db.editCustomer(s.my_id, self.new_password_entry.get(), self.name_entry.get(), self.email_entry.get(), self.phone_entry.get())
+                db.edit_customer(s.my_id, self.new_password_entry.get(), self.name_entry.get(), self.email_entry.get(), self.phone_entry.get())
             else:
                 # passing old password to function (no change)
-                db.editCustomer(s.my_id, db.returnCustomer(s.my_id)[2], self.name_entry.get(), self.email_entry.get(), self.phone_entry.get() )
+                db.edit_customer(s.my_id, db.return_customer(s.my_id)[2], self.name_entry.get(), self.email_entry.get(), self.phone_entry.get())
 
             self.error_message("Account has been updated.")
 

@@ -104,7 +104,7 @@ class CustomersMenu:
         self.listbox.grid(row=1, column=0, padx=8)
 
         # adding records from DB to Listbox
-        records = db.returnCustomers()
+        records = db.return_customers()
         for record in records:
             self.listbox.insert(END, (str(record[0]), record[1], record[2], record[3], record[4], str(record[5])))
 
@@ -122,8 +122,8 @@ class CustomersMenu:
         if self.error_label:
             self.error_label.destroy()
 
-        records = db.searchCustomer(self.login_entry.get(), self.name_entry.get(), self.phone_entry.get(),
-                                    self.email_entry.get(), self.perm_entry.get())
+        records = db.search_customer(self.login_entry.get(), self.name_entry.get(), self.phone_entry.get(),
+                                     self.email_entry.get(), self.perm_entry.get())
         self.listbox.delete(0, END)
         for record in records:
             self.listbox.insert(END, (str(record[0]), record[1], record[2], record[3], record[4], str(record[5])))
@@ -140,7 +140,7 @@ class CustomersMenu:
         # finding selected Customer
         index = self.listbox.curselection()[0]
         selected_record = self.listbox.get(index)
-        records = db.deleteCustomer(selected_record[0], 1)
+        records = db.delete_customer(selected_record[0], 1)
 
         # if there is record in DB with such id
         if records:
@@ -152,7 +152,7 @@ class CustomersMenu:
             # window asking to delete
             answer = tkinter.messagebox.askquestion('myShop DBMS', 'Delete:\n' + customer_info)
             if answer == 'yes':
-                db.deleteCustomer(selected_record[0], 0)
+                db.delete_customer(selected_record[0], 0)
                 # refreshing all
                 self.initialize_menu()
 
@@ -187,8 +187,8 @@ class CustomersMenu:
         else:
             index = self.listbox.curselection()[0]
             current_record = self.listbox.get(index)
-            db.updateCustomer(current_record[0], self.login_entry.get(), self.name_entry.get(),
-                              self.email_entry.get(), self.phone_entry.get(), self.perm_entry.get())
+            db.update_customer(current_record[0], self.login_entry.get(), self.name_entry.get(),
+                               self.email_entry.get(), self.phone_entry.get(), self.perm_entry.get())
 
             # refresh all
             self.initialize_menu()
@@ -325,7 +325,7 @@ class ProductsMenu:
         self.listbox.grid(row=1, column=0, padx=8)
 
         # adding records from DB to Listbox
-        records = db.returnProducts()
+        records = db.return_products()
         for record in records:
             self.listbox.insert(END, (str(record[0]), record[1], str(record[2]), str(record[3]), record[4]))
 
@@ -359,8 +359,8 @@ class ProductsMenu:
                     self.error_message("'{}' Exists".format(self.product_name_entry.get()))
 
                 else:
-                    db.addProduct(self.product_name_entry.get(), self.product_price_entry.get(),
-                                  self.in_stock_entry.get(), self.description_entry.get())
+                    db.add_product(self.product_name_entry.get(), self.product_price_entry.get(),
+                                   self.in_stock_entry.get(), self.description_entry.get())
 
                     # showing clear new window
                     self.initialize_menu()
@@ -370,8 +370,8 @@ class ProductsMenu:
             self.error_label.destroy()
 
         self.listbox.delete(0, END)
-        records = db.searchProducts(self.product_name_entry.get(), self.product_price_entry.get(),
-                                    self.in_stock_entry.get(), self.description_entry.get())
+        records = db.search_products(self.product_name_entry.get(), self.product_price_entry.get(),
+                                     self.in_stock_entry.get(), self.description_entry.get())
         for record in records:
             self.listbox.insert(END, (str(record[0]), record[1], str(record[2]), str(record[3]), record[4]))
 
@@ -387,7 +387,7 @@ class ProductsMenu:
         # finding selected product
         index = self.listbox.curselection()[0]
         selected_record = self.listbox.get(index)
-        records = db.deleteProduct(selected_record[0], 1)
+        records = db.delete_product(selected_record[0], 1)
 
         # if there is record in DB with such id
         if records:
@@ -399,7 +399,7 @@ class ProductsMenu:
             # window asking to delete
             answer = tkinter.messagebox.askquestion('myShop DBMS', 'Delete:\n' + product_info)
             if answer == 'yes':
-                db.deleteProduct(selected_record[0], 0)
+                db.delete_product(selected_record[0], 0)
                 # refreshing all
                 self.initialize_menu()
 
@@ -428,8 +428,8 @@ class ProductsMenu:
             # everything is filled updating
             index = self.listbox.curselection()[0]
             current_record = self.listbox.get(index)
-            db.updateProduct(current_record[0], self.product_name_entry.get(), self.product_price_entry.get(),
-                             self.in_stock_entry.get(), self.description_entry.get())
+            db.update_product(current_record[0], self.product_name_entry.get(), self.product_price_entry.get(),
+                              self.in_stock_entry.get(), self.description_entry.get())
 
             # refresh all
             self.initialize_menu()
@@ -585,19 +585,19 @@ class OrdersMenu:
         self.customer_listbox.grid(row=1, column=2, padx=8)
 
         # adding records from DB to Listbox (orders)
-        records = db.returnOrders()
+        records = db.return_orders()
         for record in records:
             self.order_listbox.insert(END, (
-            str(record[0]), str(record[1]), str(record[2]), str(record[3]), str(record[5]), str(record[6]),
-            str(record[7]), record[8]))
+                str(record[0]), str(record[1]), str(record[2]), str(record[3]), str(record[5]), str(record[6]),
+                str(record[7]), record[8]))
 
         # adding records from DB to Listbox (products)
-        records = db.returnProducts()
+        records = db.return_products()
         for record in records:
             self.product_listbox.insert(END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
         # adding records from DB to Listbox (customers)
-        records = db.returnCustomers()
+        records = db.return_customers()
         for record in records:
             self.customer_listbox.insert(END, (str(record[0]), record[2], record[4]))
 
@@ -623,12 +623,12 @@ class OrdersMenu:
             self.error_message("'location' missing")
 
         # checking if customer and product exists
-        elif not db.is_customer_id_exitst(self.id_customer_entry.get()) or not db.is_product_id_exists(self.id_product_entry.get()):
+        elif not db.is_customer_id_exist(self.id_customer_entry.get()) or not db.is_product_id_exists(self.id_product_entry.get()):
             self.error_message("product or customer id not Exists")
 
         # function itself check if there is enough products, and count total price (quantity*price)
-        elif db.addOrder(self.id_customer_entry.get(), self.id_product_entry.get(), self.quantity_entry.get(),
-                         self.location_entry.get(), self.payment_status_entry.get(), self.send_status_entry.get()):
+        elif db.add_order(self.id_customer_entry.get(), self.id_product_entry.get(), self.quantity_entry.get(),
+                          self.location_entry.get(), self.payment_status_entry.get(), self.send_status_entry.get()):
 
             self.initialize_menu()
         else:
@@ -649,7 +649,7 @@ class OrdersMenu:
             # finding selected order
             index = self.order_listbox.curselection()[0]
             selected_record = self.order_listbox.get(index)
-            db.deleteOrder(selected_record[0])
+            db.delete_order(selected_record[0])
 
             # refreshing all
             self.initialize_menu()
@@ -659,8 +659,8 @@ class OrdersMenu:
             self.error_label.destroy()
 
         self.order_listbox.delete(0, END)
-        records = db.searchOrders(self.id_product_entry.get(), self.id_customer_entry.get(), self.quantity_entry.get(),
-                                  self.payment_status_entry.get(), self.location_entry.get())
+        records = db.search_orders(self.id_product_entry.get(), self.id_customer_entry.get(), self.quantity_entry.get(),
+                                   self.payment_status_entry.get(), self.location_entry.get())
         for record in records:
             self.order_listbox.insert(END, (
             str(record[0]), str(record[1]), str(record[2]), str(record[3]), str(record[5]), str(record[6]),
@@ -690,12 +690,12 @@ class OrdersMenu:
             self.location_entry.insert(END, current_record[7])
 
             # inserting customer info
-            record = db.returnCustomer(current_record[1])
+            record = db.return_customer(current_record[1])
             self.customer_listbox.delete(0, END)
             self.customer_listbox.insert(END, (str(record[0]), record[3], record[5]))
 
             # inserting product info
-            record = db.returnProduct(current_record[2])
+            record = db.return_product(current_record[2])
             self.product_listbox.delete(0, END)
             self.product_listbox.insert(END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
@@ -711,7 +711,7 @@ class OrdersMenu:
             self.id_product_entry.insert(END, current_record[0])
 
             # inserting selected customer Orders
-            records = db.returnProductOrders(current_record[0])
+            records = db.return_product_orders(current_record[0])
             self.order_listbox.delete(0, END)
             for record in records:
                 self.order_listbox.insert(END, (
@@ -730,7 +730,7 @@ class OrdersMenu:
             self.id_customer_entry.insert(END, current_record[0])
 
             # inserting selected customer Orders
-            records = db.returnCustomerOrders(current_record[0])
+            records = db.return_customer_orders(current_record[0])
             self.order_listbox.delete(0, END)
             for record in records:
                 self.order_listbox.insert(END, (
