@@ -14,7 +14,7 @@ class LoginWindow:
         self.master.title('Mendiona bytes')
         self.frame = tk.Frame(self.master, bg=s.bgg, bd=15)
 
-        # it contains error messages when for example not all entry are filled.
+        # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
 
         # login, password label and entry
