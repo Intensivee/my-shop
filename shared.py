@@ -1,25 +1,22 @@
+"""Contains values and functions used in many modules."""
+
 my_id = -1
 bgg = 'SkyBlue1'
 lgg = 'LightSkyBlue1'
 xgg = 'DeepSkyBlue4'
 
 
-# check whether is int or float but also not throw error when it's string
-def is_integer(value):
+def is_float(value):
+    """check whether it's float but also not throw error when it's string"""
     try:
-        if isinstance(int(value), int):
-            return True
-        else:
-            return False
+        return isinstance(float(value), float)
     except ValueError:
         return False
 
 
-def is_float(value):
+def is_integer(value):
+    """check whether it can be an int but also not throw error when it's string"""
     try:
-        if isinstance(float(value), float):
-            return True
-        else:
-            return False
+        return isinstance(int(value), int)
     except ValueError:
         return False
