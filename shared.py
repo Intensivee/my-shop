@@ -1,9 +1,8 @@
 """Contains values and functions used in many modules."""
 
-my_id = -1
-bgg = 'SkyBlue1'
-lgg = 'LightSkyBlue1'
-xgg = 'DeepSkyBlue4'
+MY_ID = -1
+BACKGROUND = 'SkyBlue1'
+FOREGROUND = 'LightSkyBlue1'
 
 
 def is_float(value):
