@@ -6,8 +6,7 @@ import tkinter.messagebox
 import dbmanager as db
 import globals
 
-conn = sqlite3.connect('dataa.db')
-c = conn.cursor()
+
 
 
 class CustomersMenu:
@@ -385,17 +384,16 @@ class ProductsMenu:
 
         # if everything is filled
         else:
-            with conn:
-                # if product exists -> print error ELSE add
-                if db.is_product_exists(self.product_name_entry.get()):
-                    self.error_message("'{}' Exists".format(self.product_name_entry.get()))
+            # if product exists -> print error ELSE add
+            if db.is_product_exists(self.product_name_entry.get()):
+                self.error_message("'{}' Exists".format(self.product_name_entry.get()))
 
-                else:
-                    db.add_product(self.product_name_entry.get(), self.product_price_entry.get(),
-                                   self.in_stock_entry.get(), self.description_entry.get())
+            else:
+                db.add_product(self.product_name_entry.get(), self.product_price_entry.get(),
+                               self.in_stock_entry.get(), self.description_entry.get())
 
-                    # showing clear new window
-                    self.initialize_menu()
+                # showing clear new window
+                self.initialize_menu()
 
     def search_product(self):
         """Insert's into listbox founded products"""
