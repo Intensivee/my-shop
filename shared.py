@@ -1,6 +1,6 @@
 """Contains values and functions used in many modules."""
 
-MY_ID = -1
+my_id = -1
 BACKGROUND = 'SkyBlue1'
 FOREGROUND = 'LightSkyBlue1'
 

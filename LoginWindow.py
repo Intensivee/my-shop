@@ -1,12 +1,15 @@
 """Login and create new acc module."""
 import tkinter as tk
-import shared
-import dbmanager as db
-import CustomerWindow
+
 import AdminWindow
+import CustomerWindow
+import dbmanager as db
+import shared
+
 
 class LoginWindow:
     """Login and create new acc window."""
+
     def __init__(self, master):
         """Initializing login window."""
         self.master = master
@@ -17,7 +20,6 @@ class LoginWindow:
         self.error_label = tk.Label()
 
         self.initialize_log_window()
-
 
     def initialize_log_window(self):
         if self.frame:
@@ -48,7 +50,7 @@ class LoginWindow:
         if self.error_label:
             self.error_label.destroy()
 
-        #checking if all required entry's are filled
+        # checking if all required entry's are filled
         if self.login_entry.get() == '':
             self.error_label = tk.Label(self.frame, text="login missing", fg='red', bg=shared.BACKGROUND)
             self.error_label.grid(row=2, column=1)
@@ -57,8 +59,8 @@ class LoginWindow:
             self.error_label.grid(row=2, column=1)
 
         else:
-            shared.MY_ID, perm = db.customer_perm(self.login_entry.get(), self.password_entry.get())
-            if perm == -1 or shared.MY_ID == -1:
+            shared.my_id, perm = db.customer_perm(self.login_entry.get(), self.password_entry.get())
+            if perm == -1 or shared.my_id == -1:
                 self.error_label = tk.Label(self.frame, text="try again..", fg='red', bg=shared.BACKGROUND)
                 self.error_label.grid(row=2, column=1)
             elif perm == 1:
@@ -76,7 +78,7 @@ class LoginWindow:
         login_label = tk.Label(self.frame, text='login:', bg=shared.BACKGROUND)
         login_label.grid(row=0, column=0, pady=(10, 0), sticky=tk.E)
         password_label = tk.Label(self.frame, text='password:', bg=shared.BACKGROUND)
-        password_label.grid(row=1, column=0, sticky=tk.E,)
+        password_label.grid(row=1, column=0, sticky=tk.E, )
         name_label = tk.Label(self.frame, text='name:', bg=shared.BACKGROUND)
         name_label.grid(row=2, column=0, sticky=tk.E)
         phone_label = tk.Label(self.frame, text='phone:', bg=shared.BACKGROUND)
@@ -131,7 +133,8 @@ class LoginWindow:
             # checking if customer is in DB
             exist = db.is_customer_exists(self.login_entry.get(), self.email_entry.get())
             if exist:
-                self.error_label = tk.Label(self.frame, text="'{}' exists".format(exist), fg='red', bg=shared.BACKGROUND)
+                self.error_label = tk.Label(self.frame, text="'{}' exists".format(exist), fg='red',
+                                            bg=shared.BACKGROUND)
                 self.error_label.grid(row=5, column=1)
             else:
                 db.add_customer(self.login_entry.get(), self.password_entry.get(), self.name_entry.get(),

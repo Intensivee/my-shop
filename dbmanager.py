@@ -49,6 +49,8 @@ def initialize():
     )""")
 
 
+
+
 def is_customer_exists(login, email):
     """Returns false if not exist, or login/email depending on which exists in db."""
     c.execute("SELECT * from Customers WHERE login=?", (login, ))
@@ -61,11 +63,12 @@ def is_customer_exists(login, email):
     return False
 
 
+
 def is_customer_id_exist(customer_id) -> bool:
     """Returns True or False depending if customer exists."""
     with conn:
-        c.execute("SELECT id_customer from Customers WHERE id_customer =?", (customer_id,))
-        return bool(c.fetchone() is not None)
+        c.execute("SELECT exists(SELECT 1 FROM Customers WHERE id_customer =?)", (customer_id,))
+        return c.fetchone()[0] == 1
 
 
 def add_customer(login, password, name, phone, email):
@@ -146,22 +149,20 @@ def customer_perm(login, password):
 # products ---------------------------------------------------------------
 
 
+
 # returns true or false, whether the product exists
 def is_product_exists(product_name) -> bool:
     """Returns True or False depending if product with given name exists."""
-    c.execute("SELECT * from Products WHERE product_name=?", (product_name,))
-    if c.fetchone() is not None:
-        return True
-    return False
+    with conn:
+        c.execute("SELECT exists(SELECT 1 FROM Products WHERE product_name = ?)", (product_name,))
+        return c.fetchone()[0] == 1
 
 
 def is_product_id_exists(product_id) -> bool:
     """Returns True or False depending if product with given id exists."""
     with conn:
-        c.execute("SELECT id_product from Products WHERE id_product =?", (product_id,))
-        if c.fetchone() is not None:
-            return True
-        return False
+        c.execute("SELECT exists(SELECT 1 FROM Products WHERE id_product =?)", (product_id,))
+        return c.fetchone()[0] == 1
 
 
 def return_product(product_id):

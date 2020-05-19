@@ -9,6 +9,7 @@ import shared
 
 class CustomerApp:
     """Main customer window."""
+
     def __init__(self, master):
         """Initializes main customer window."""
         self.master = master
@@ -44,9 +45,11 @@ class CustomerApp:
         self.search_button = tk.Button(self.frame, text='List of products',
                                        bg=shared.FOREGROUND, command=self.list_products, width=16)
         self.search_button.grid(row=0, column=0, pady=(10, 3))
-        self.edit_button = tk.Button(self.frame, text='Edit account', bg=shared.FOREGROUND, command=self.acc_edit, width=16)
+        self.edit_button = tk.Button(self.frame, text='Edit account', bg=shared.FOREGROUND, command=self.acc_edit,
+                                     width=16)
         self.edit_button.grid(row=1, column=0, pady=(0, 3))
-        self.orders_button = tk.Button(self.frame, text='My Orders', bg=shared.FOREGROUND, command=self.my_orders, width=16)
+        self.orders_button = tk.Button(self.frame, text='My Orders', bg=shared.FOREGROUND, command=self.my_orders,
+                                       width=16)
         self.orders_button.grid(row=2, column=0, pady=(0, 3))
         self.logoff_button = tk.Button(self.frame, text='Logoff', bg=shared.FOREGROUND, command=self.log_off, width=16)
         self.logoff_button.grid(row=3, column=0, pady=(0, 3))
@@ -115,11 +118,12 @@ class CustomerApp:
             self.error_message("'location' missing")
 
         # checking if customer and product exists
-        elif not db.is_customer_id_exist(shared.MY_ID) or not db.is_product_id_exists(self.id_product_entry.get()):
+        elif not db.is_customer_id_exist(shared.my_id) or not db.is_product_id_exists(self.id_product_entry.get()):
             self.error_message("product or customer id not Exists")
 
         # function itself check if there is enough products, and count total price (quantity*price)
-        elif db.add_order(shared.MY_ID, self.id_product_entry.get(), self.quantity_entry.get(), self.location_entry.get()):
+        elif db.add_order(shared.my_id, self.id_product_entry.get(), self.quantity_entry.get(),
+                          self.location_entry.get()):
             tkinter.messagebox.showinfo("Mendiona bytes", 'successfully added.')
             self.list_products()
         else:
@@ -142,7 +146,8 @@ class CustomerApp:
 
             # creating Message instead of Label (description might be long)
             description = db.return_product(self.id_product_entry.get())[4]
-            self.error_label = tk.Message(self.function_frame3, text="Description: {}".format(description), bg=shared.BACKGROUND,
+            self.error_label = tk.Message(self.function_frame3, text="Description: {}".format(description),
+                                          bg=shared.BACKGROUND,
                                           width=300)
             self.error_label.grid(row=5, column=0)
         else:
@@ -176,7 +181,8 @@ class CustomerApp:
 send_status: \t{}\noder_date: \t{}\nlocation: \t{}""" \
                 .format(str(record[3]), str(record[4]), str(record[5]), str(record[6]), str(record[7]), str(record[8]))
 
-            self.error_label = tk.Message(self.function_frame2, text="Description:\n{}".format(desc), bg=shared.BACKGROUND,
+            self.error_label = tk.Message(self.function_frame2, text="Description:\n{}".format(desc),
+                                          bg=shared.BACKGROUND,
                                           width=300)
             self.error_label.grid(row=0, column=0)
 
@@ -205,7 +211,7 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}""" \
         self.my_orders_listbox.grid(row=1, column=0, padx=8)
 
         # adding records from DB to Listbox
-        records = db.orders_product_info(shared.MY_ID)
+        records = db.orders_product_info(shared.my_id)
         for record in records:
             self.my_orders_listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
@@ -223,7 +229,7 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}""" \
 
     def log_off(self):
         """Return's User to logging window."""
-        shared.MY_ID = -1
+        shared.my_id = -1
         self.master.destroy()
         self.master = tk.Tk()
         LoginWindow.LoginWindow(self.master)
@@ -232,6 +238,7 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}""" \
 
 class AccEdit:
     """Customer window for editing account."""
+
     def __init__(self, master):
         """Initializes editing account window."""
         self.master = master
@@ -269,13 +276,14 @@ class AccEdit:
         self.email_entry.grid(row=4, column=1)
 
         # Create Buttons
-        self.change_button = tk.Button(self.frame, text='change', bg=shared.FOREGROUND, command=self.set_change, width=16)
+        self.change_button = tk.Button(self.frame, text='change', bg=shared.FOREGROUND, command=self.set_change,
+                                       width=16)
         self.change_button.grid(row=0, column=2, padx=20)
         self.cancel_button = tk.Button(self.frame, text='Cancel', bg=shared.FOREGROUND, command=self.exit, width=16)
         self.cancel_button.grid(row=1, column=2)
 
         # getting customer info from DB
-        customer_info = db.return_customer(shared.MY_ID)
+        customer_info = db.return_customer(shared.my_id)
         if customer_info:
             self.name_entry.insert(tk.END, customer_info[3])
             self.phone_entry.insert(tk.END, customer_info[4])
@@ -294,7 +302,7 @@ class AccEdit:
             self.error_message('new password is too short.')
 
         # checking if all required entry's are filled properly
-        elif self.password_entry.get() != db.return_customer(shared.MY_ID)[2]:
+        elif self.password_entry.get() != db.return_customer(shared.my_id)[2]:
             self.error_message('password does not match.')
         elif self.name_entry.get() == '':
             self.error_message('Can not update empty name.')
@@ -308,11 +316,12 @@ class AccEdit:
 
             if self.new_password_entry != '':
                 # passing new password
-                db.edit_customer(shared.MY_ID, self.new_password_entry.get(), self.name_entry.get(), self.email_entry.get(),
+                db.edit_customer(shared.my_id, self.new_password_entry.get(), self.name_entry.get(),
+                                 self.email_entry.get(),
                                  self.phone_entry.get())
             else:
                 # passing old password to function (no change)
-                db.edit_customer(shared.MY_ID, db.return_customer(shared.MY_ID)[2], self.name_entry.get(),
+                db.edit_customer(shared.my_id, db.return_customer(shared.my_id)[2], self.name_entry.get(),
                                  self.email_entry.get(), self.phone_entry.get())
 
             self.error_message("Account has been updated.")

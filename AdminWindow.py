@@ -146,10 +146,10 @@ class CustomersMenu:
             # there has to be for loop, because single line return error: 'list out of range'
             customer_info = ''
             for record in records:
-                customer_info = str(record[0]) + '\n' + record[1] + '\n' + str(record[2]) + '\n'
+                customer_info = "{}\n{}\n{}".format(record[0], record[1], record[2])
 
             # window asking to delete
-            answer = tkinter.messagebox.askquestion('myShop DBMS', 'Delete:\n' + customer_info)
+            answer = tkinter.messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(customer_info))
             if answer == 'yes':
                 db.delete_customer(selected_record[0], 0)
                 # refreshing all
@@ -385,10 +385,10 @@ class ProductsMenu:
             # there has to be for loop, because single line return error: 'list out of range'
             product_info = ''
             for record in records:
-                product_info = str(record[0]) + '\n' + record[1] + '\n' + str(record[2]) + '\n' + str(record[3]) + '\n'
+                product_info = "{}\n{}\n{}".format(record[1], record[2], record[3])
 
             # window asking to delete
-            answer = tkinter.messagebox.askquestion('myShop DBMS', 'Delete:\n' + product_info)
+            answer = tkinter.messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(product_info))
             if answer == 'yes':
                 db.delete_product(selected_record[0], 0)
                 # refreshing all
