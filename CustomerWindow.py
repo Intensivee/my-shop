@@ -4,7 +4,7 @@ import tkinter.messagebox
 
 import LoginWindow
 import dbmanager as db
-import shared
+import globals
 
 
 class CustomerApp:
@@ -13,15 +13,15 @@ class CustomerApp:
     def __init__(self, master):
         """Initializes main customer window."""
         self.master = master
-        self.master.geometry("800x900+0+0")
-        self.master.configure(bg=shared.BACKGROUND)
-        self.master.title('Mendiona bytes')
+        self.master.geometry(globals.CUSTOMER_WINDOW_SIZE)
+        self.master.configure(bg=globals.BACKGROUND)
+        self.master.title(globals.APP_NAME)
 
         # main frames
-        self.frame = tk.Frame(self.master, bg=shared.BACKGROUND)
-        self.function_frame = tk.Frame(self.master, bg=shared.BACKGROUND)
-        self.function_frame2 = tk.Frame(self.master, bg=shared.BACKGROUND)
-        self.function_frame3 = tk.Frame(self.master, bg=shared.BACKGROUND)
+        self.frame = tk.Frame(self.master, bg=globals.BACKGROUND)
+        self.function_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
+        self.function_frame2 = tk.Frame(self.master, bg=globals.BACKGROUND)
+        self.function_frame3 = tk.Frame(self.master, bg=globals.BACKGROUND)
 
         # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
@@ -41,17 +41,17 @@ class CustomerApp:
         if self.function_frame3:
             self.function_frame3.destroy()
 
-        self.frame = tk.Frame(self.master, bg=shared.BACKGROUND)
+        self.frame = tk.Frame(self.master, bg=globals.BACKGROUND)
         self.search_button = tk.Button(self.frame, text='List of products',
-                                       bg=shared.FOREGROUND, command=self.list_products, width=16)
+                                       bg=globals.FOREGROUND, command=self.list_products, width=16)
         self.search_button.grid(row=0, column=0, pady=(10, 3))
-        self.edit_button = tk.Button(self.frame, text='Edit account', bg=shared.FOREGROUND, command=self.acc_edit,
+        self.edit_button = tk.Button(self.frame, text='Edit account', bg=globals.FOREGROUND, command=self.acc_edit,
                                      width=16)
         self.edit_button.grid(row=1, column=0, pady=(0, 3))
-        self.orders_button = tk.Button(self.frame, text='My Orders', bg=shared.FOREGROUND, command=self.my_orders,
+        self.orders_button = tk.Button(self.frame, text='My Orders', bg=globals.FOREGROUND, command=self.my_orders,
                                        width=16)
         self.orders_button.grid(row=2, column=0, pady=(0, 3))
-        self.logoff_button = tk.Button(self.frame, text='Logoff', bg=shared.FOREGROUND, command=self.log_off, width=16)
+        self.logoff_button = tk.Button(self.frame, text='Logoff', bg=globals.FOREGROUND, command=self.log_off, width=16)
         self.logoff_button.grid(row=3, column=0, pady=(0, 3))
         self.frame.pack()
 
@@ -60,18 +60,17 @@ class CustomerApp:
         self.initialize_main_buttons()
 
         # frame for listbox
-        self.function_frame = tk.Frame(self.master, bg=shared.BACKGROUND)
+        self.function_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
         self.function_frame.pack()
-        self.function_frame2 = tk.Frame(self.master, bg=shared.BACKGROUND)
+        self.function_frame2 = tk.Frame(self.master, bg=globals.BACKGROUND)
         self.function_frame2.pack()
 
         # creating listbox for customers
-        list_label = tk.Label(self.function_frame, text='list of products', width=100, bg=shared.BACKGROUND)
+        list_label = tk.Label(self.function_frame, text='list of products', width=100, bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0, pady=(10, 0))
         scrollbar = tk.Scrollbar(self.function_frame)
-        scrollbar.grid(row=1, column=1, sticky='ns')
         self.products_listbox = tk.Listbox(self.function_frame, width=60, height=15,
-                                           yscrollcommand=scrollbar.set, bg=shared.FOREGROUND)
+                                           yscrollcommand=scrollbar.set, bg=globals.FOREGROUND)
         self.products_listbox.bind('<<ListboxSelect>>', self.product_selection)
         self.products_listbox.grid(row=1, column=0, padx=8)
 
@@ -81,27 +80,27 @@ class CustomerApp:
             self.products_listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
         # crating labels
-        id_product_label = tk.Label(self.function_frame2, text='Product ID:', bg=shared.BACKGROUND)
+        id_product_label = tk.Label(self.function_frame2, text='Product ID:', bg=globals.BACKGROUND)
         id_product_label.grid(row=0, column=0, sticky=tk.E)
-        quantity_label = tk.Label(self.function_frame2, text='Quantity:', bg=shared.BACKGROUND)
+        quantity_label = tk.Label(self.function_frame2, text='Quantity:', bg=globals.BACKGROUND)
         quantity_label.grid(row=1, column=0, sticky=tk.E)
-        location_label = tk.Label(self.function_frame2, text='Order location:', bg=shared.BACKGROUND)
+        location_label = tk.Label(self.function_frame2, text='Order location:', bg=globals.BACKGROUND)
         location_label.grid(row=2, column=0, sticky=tk.E)
 
         # creating entry boxes
-        self.id_product_entry = tk.Entry(self.function_frame2, width=30, bg=shared.FOREGROUND)
+        self.id_product_entry = tk.Entry(self.function_frame2, width=30, bg=globals.FOREGROUND)
         self.id_product_entry.grid(row=0, column=1)
-        self.quantity_entry = tk.Entry(self.function_frame2, width=30, bg=shared.FOREGROUND)
+        self.quantity_entry = tk.Entry(self.function_frame2, width=30, bg=globals.FOREGROUND)
         self.quantity_entry.grid(row=1, column=1)
-        self.location_entry = tk.Entry(self.function_frame2, width=30, bg=shared.FOREGROUND)
+        self.location_entry = tk.Entry(self.function_frame2, width=30, bg=globals.FOREGROUND)
         self.location_entry.grid(row=2, column=1)
 
         # buttons
         self.place_order_button = tk.Button(self.function_frame2, text='Place order',
-                                            bg=shared.FOREGROUND, command=self.place_order, width=16)
+                                            bg=globals.FOREGROUND, command=self.place_order, width=16)
         self.place_order_button.grid(row=4, column=0)
         self.details_button = tk.Button(self.function_frame2, text='details',
-                                        bg=shared.FOREGROUND, command=self.product_details, width=16)
+                                        bg=globals.FOREGROUND, command=self.product_details, width=16)
         self.details_button.grid(row=4, column=1, )
 
     def place_order(self):
@@ -112,17 +111,17 @@ class CustomerApp:
         # checking if all required entry's are filled properly
         if self.id_product_entry.get() == '':
             self.error_message("'id product' missing")
-        elif not shared.is_integer(self.quantity_entry.get()) or int(self.quantity_entry.get()) < 1:
+        elif not globals.is_integer(self.quantity_entry.get()) or int(self.quantity_entry.get()) < 1:
             self.error_message("'quantity' Must be an positive integer")
         elif self.location_entry.get() == '':
             self.error_message("'location' missing")
 
         # checking if customer and product exists
-        elif not db.is_customer_id_exist(shared.my_id) or not db.is_product_id_exists(self.id_product_entry.get()):
+        elif not db.is_customer_id_exist(globals.my_id) or not db.is_product_id_exists(self.id_product_entry.get()):
             self.error_message("product or customer id not Exists")
 
         # function itself check if there is enough products, and count total price (quantity*price)
-        elif db.add_order(shared.my_id, self.id_product_entry.get(), self.quantity_entry.get(),
+        elif db.add_order(globals.my_id, self.id_product_entry.get(), self.quantity_entry.get(),
                           self.location_entry.get()):
             tkinter.messagebox.showinfo("Mendiona bytes", 'successfully added.')
             self.list_products()
@@ -141,13 +140,13 @@ class CustomerApp:
 
         elif db.is_product_id_exists(self.id_product_entry.get()):
 
-            self.function_frame3 = tk.Frame(self.master, bg=shared.BACKGROUND)
+            self.function_frame3 = tk.Frame(self.master, bg=globals.BACKGROUND)
             self.function_frame3.pack(side=tk.TOP)
 
             # creating Message instead of Label (description might be long)
             description = db.return_product(self.id_product_entry.get())[4]
             self.error_label = tk.Message(self.function_frame3, text="Description: {}".format(description),
-                                          bg=shared.BACKGROUND,
+                                          bg=globals.BACKGROUND,
                                           width=300)
             self.error_label.grid(row=5, column=0)
         else:
@@ -173,7 +172,7 @@ class CustomerApp:
             if self.function_frame2:
                 self.function_frame2.destroy()
 
-            self.function_frame2 = tk.Frame(self.master, bg=shared.BACKGROUND)
+            self.function_frame2 = tk.Frame(self.master, bg=globals.BACKGROUND)
             self.function_frame2.pack(side=tk.TOP)
 
             # creating Message instead of Label (long)
@@ -181,37 +180,41 @@ class CustomerApp:
 send_status: \t{}\noder_date: \t{}\nlocation: \t{}""" \
                 .format(str(record[3]), str(record[4]), str(record[5]), str(record[6]), str(record[7]), str(record[8]))
 
-            self.error_label = tk.Message(self.function_frame2, text="Description:\n{}".format(desc),
-                                          bg=shared.BACKGROUND,
+            self.error_label = tk.Message(self.function_frame2, text="\n{}".format(desc),
+                                          bg=globals.BACKGROUND,
                                           width=300)
             self.error_label.grid(row=0, column=0)
 
     def acc_edit(self):
         """Run's new window for editing account."""
-        self.master.destroy()
-        self.master = tk.Tk()
+        if self.frame:
+            self.frame.destroy()
+        if self.function_frame:
+            self.function_frame.destroy()
+        if self.function_frame2:
+            self.function_frame2.destroy()
+        if self.function_frame3:
+            self.function_frame3.destroy()
         AccEdit(self.master)
-        self.master.mainloop()
 
     def my_orders(self):
         """Create's menu with list of user orders."""
         self.initialize_main_buttons()
 
-        self.function_frame = tk.Frame(self.master, bg=shared.BACKGROUND)
+        self.function_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
         self.function_frame.pack()
 
         # creating listbox for customers
-        list_label = tk.Label(self.function_frame, text='my orders:', width=100, bg=shared.BACKGROUND)
+        list_label = tk.Label(self.function_frame, text='my orders:', width=100, bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0, pady=(10, 0))
         scrollbar = tk.Scrollbar(self.function_frame)
-        scrollbar.grid(row=1, column=1, sticky='ns')
         self.my_orders_listbox = tk.Listbox(self.function_frame, width=60, height=15, yscrollcommand=scrollbar.set,
-                                            bg=shared.FOREGROUND)
+                                            bg=globals.FOREGROUND)
         self.my_orders_listbox.bind('<<ListboxSelect>>', self.order_selection)
         self.my_orders_listbox.grid(row=1, column=0, padx=8)
 
         # adding records from DB to Listbox
-        records = db.orders_product_info(shared.my_id)
+        records = db.orders_product_info(globals.my_id)
         for record in records:
             self.my_orders_listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
@@ -224,16 +227,21 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}""" \
         if self.error_label:
             self.error_label.destroy()
 
-        self.error_label = tk.Label(self.function_frame2, text="{}".format(name), bg=shared.BACKGROUND, fg='red')
+        self.error_label = tk.Label(self.function_frame2, text="{}".format(name), bg=globals.BACKGROUND, fg='red')
         self.error_label.grid(row=3, column=1)
 
     def log_off(self):
         """Return's User to logging window."""
-        shared.my_id = -1
-        self.master.destroy()
-        self.master = tk.Tk()
+        globals.my_id = -1
+        if self.frame:
+            self.frame.destroy()
+        if self.function_frame:
+            self.function_frame.destroy()
+        if self.function_frame2:
+            self.function_frame2.destroy()
+        if self.function_frame3:
+            self.function_frame3.destroy()
         LoginWindow.LoginWindow(self.master)
-        self.master.mainloop()
 
 
 class AccEdit:
@@ -242,48 +250,49 @@ class AccEdit:
     def __init__(self, master):
         """Initializes editing account window."""
         self.master = master
-        self.master.configure(bg=shared.BACKGROUND)
-        self.master.title('Mendiona bytes')
+        self.master.configure(bg=globals.BACKGROUND)
+        self.master.title(globals.APP_NAME)
+        self.master.geometry(globals.CUSTOMER_WINDOW_SIZE)
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
 
-        self.frame = tk.Frame(self.master, bg=shared.BACKGROUND)
+        self.frame = tk.Frame(self.master, bg=globals.BACKGROUND)
         self.frame.pack()
 
         # Create text box labels
-        new_password_label = tk.Label(self.frame, text='new password(opt):', bg=shared.BACKGROUND)
-        new_password_label.grid(row=0, column=0, sticky=tk.E)
-        password_label = tk.Label(self.frame, text='password:', bg=shared.BACKGROUND)
-        password_label.grid(row=1, column=0, sticky=tk.E)
-        name_label = tk.Label(self.frame, text='name:', bg=shared.BACKGROUND)
-        name_label.grid(row=2, column=0, sticky=tk.E)
-        phone_label = tk.Label(self.frame, text='phone:', bg=shared.BACKGROUND)
-        phone_label.grid(row=3, column=0, sticky=tk.E)
-        email_label = tk.Label(self.frame, text='email:', bg=shared.BACKGROUND)
-        email_label.grid(row=4, column=0, sticky=tk.E)
+        new_password_label = tk.Label(self.frame, text='new password(opt):', bg=globals.BACKGROUND)
+        new_password_label.grid(row=1, column=0, pady=(10, 0), sticky=tk.E)
+        password_label = tk.Label(self.frame, text='password:', bg=globals.BACKGROUND)
+        password_label.grid(row=2, column=0, sticky=tk.E)
+        name_label = tk.Label(self.frame, text='name:', bg=globals.BACKGROUND)
+        name_label.grid(row=3, column=0, pady=(4, 0), sticky=tk.E)
+        phone_label = tk.Label(self.frame, text='phone:', bg=globals.BACKGROUND)
+        phone_label.grid(row=4, column=0, pady=(4, 0), sticky=tk.E)
+        email_label = tk.Label(self.frame, text='email:', bg=globals.BACKGROUND)
+        email_label.grid(row=5, column=0, pady=(4, 0), sticky=tk.E)
 
         # Create Entry box
-        self.new_password_entry = tk.Entry(self.frame, width=22, show='*', bg=shared.FOREGROUND)
-        self.new_password_entry.grid(row=0, column=1)
-        self.password_entry = tk.Entry(self.frame, width=22, show='*', bg=shared.FOREGROUND)
-        self.password_entry.grid(row=1, column=1)
-        self.name_entry = tk.Entry(self.frame, width=22, bg=shared.FOREGROUND)
-        self.name_entry.grid(row=2, column=1)
-        self.phone_entry = tk.Entry(self.frame, width=22, bg=shared.FOREGROUND)
-        self.phone_entry.grid(row=3, column=1)
-        self.email_entry = tk.Entry(self.frame, width=22, bg=shared.FOREGROUND)
-        self.email_entry.grid(row=4, column=1)
+        self.new_password_entry = tk.Entry(self.frame, width=22, show='*', bg=globals.FOREGROUND)
+        self.new_password_entry.grid(row=1, column=1, pady=(10, 0))
+        self.password_entry = tk.Entry(self.frame, width=22, show='*', bg=globals.FOREGROUND)
+        self.password_entry.grid(row=2, column=1)
+        self.name_entry = tk.Entry(self.frame, width=22, bg=globals.FOREGROUND)
+        self.name_entry.grid(row=3, column=1)
+        self.phone_entry = tk.Entry(self.frame, width=22, bg=globals.FOREGROUND)
+        self.phone_entry.grid(row=4, column=1)
+        self.email_entry = tk.Entry(self.frame, width=22, bg=globals.FOREGROUND)
+        self.email_entry.grid(row=5, column=1)
 
         # Create Buttons
-        self.change_button = tk.Button(self.frame, text='change', bg=shared.FOREGROUND, command=self.set_change,
+        self.change_button = tk.Button(self.frame, text='change', bg=globals.FOREGROUND, command=self.set_change,
                                        width=16)
-        self.change_button.grid(row=0, column=2, padx=20)
-        self.cancel_button = tk.Button(self.frame, text='Cancel', bg=shared.FOREGROUND, command=self.exit, width=16)
-        self.cancel_button.grid(row=1, column=2)
+        self.change_button.grid(row=1, column=2, padx=(10, 0), pady=(10, 0))
+        self.cancel_button = tk.Button(self.frame, text='Cancel', bg=globals.FOREGROUND, command=self.exit, width=16)
+        self.cancel_button.grid(row=2, column=2, padx=(10, 0))
 
         # getting customer info from DB
-        customer_info = db.return_customer(shared.my_id)
+        customer_info = db.return_customer(globals.my_id)
         if customer_info:
             self.name_entry.insert(tk.END, customer_info[3])
             self.phone_entry.insert(tk.END, customer_info[4])
@@ -302,11 +311,11 @@ class AccEdit:
             self.error_message('new password is too short.')
 
         # checking if all required entry's are filled properly
-        elif self.password_entry.get() != db.return_customer(shared.my_id)[2]:
+        elif self.password_entry.get() != db.return_customer(globals.my_id)[2]:
             self.error_message('password does not match.')
         elif self.name_entry.get() == '':
             self.error_message('Can not update empty name.')
-        elif self.phone_entry.get() != '' and not shared.is_integer(self.phone_entry.get()):
+        elif self.phone_entry.get() != '' and not globals.is_integer(self.phone_entry.get()):
             self.error_message("wrong phone number.")
         elif self.email_entry.get() == '':
             self.error_message('Can not update empty email.')
@@ -316,12 +325,12 @@ class AccEdit:
 
             if self.new_password_entry != '':
                 # passing new password
-                db.edit_customer(shared.my_id, self.new_password_entry.get(), self.name_entry.get(),
+                db.edit_customer(globals.my_id, self.new_password_entry.get(), self.name_entry.get(),
                                  self.email_entry.get(),
                                  self.phone_entry.get())
             else:
                 # passing old password to function (no change)
-                db.edit_customer(shared.my_id, db.return_customer(shared.my_id)[2], self.name_entry.get(),
+                db.edit_customer(globals.my_id, db.return_customer(globals.my_id)[2], self.name_entry.get(),
                                  self.email_entry.get(), self.phone_entry.get())
 
             self.error_message("Account has been updated.")
@@ -335,12 +344,10 @@ class AccEdit:
         if self.error_label:
             self.error_label.destroy()
 
-        self.error_label = tk.Label(self.frame, fg='red', text='{}'.format(name), bg=shared.BACKGROUND)
-        self.error_label.grid(row=5, column=1)
+        self.error_label = tk.Label(self.frame, fg='red', text='{}'.format(name), bg=globals.BACKGROUND)
+        self.error_label.grid(row=6, column=1)
 
     def exit(self):
         """Run's back main customer window."""
-        self.master.destroy()
-        self.master = tk.Tk()
+        self.frame.destroy()
         CustomerApp(self.master)
-        self.master.mainloop()

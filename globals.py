@@ -1,8 +1,15 @@
 """Contains values and functions used in many modules."""
 
 my_id = -1
+
+APP_NAME = "Mendiona bytes"
+
 BACKGROUND = 'SkyBlue1'
 FOREGROUND = 'LightSkyBlue1'
+
+CUSTOMER_WINDOW_SIZE = "650x600"
+ADMIN_WINDOW_SIZE = "1000x500"
+LOGIN_WINDOW_SIZE = "300x200"
 
 
 def is_float(value):
