@@ -11,7 +11,7 @@ class LoginWindow:
     """Login and create new acc window."""
 
     def __init__(self, master):
-        """Initializing login window."""
+        """Creates login window."""
         self.master = master
         self.master.title(globals.APP_NAME)
         self.master.geometry(globals.LOGIN_WINDOW_SIZE)
@@ -24,6 +24,7 @@ class LoginWindow:
         self.initialize_log_window()
 
     def initialize_log_window(self):
+        """Initializing login window."""
         if self.frame:
             self.frame.destroy()
         self.frame = tk.Frame(self.master, bg=globals.BACKGROUND, bd=15)

@@ -49,19 +49,16 @@ def initialize():
     )""")
 
 
-
-
 def is_customer_exists(login, email):
     """Returns false if not exist, or login/email depending on which exists in db."""
-    c.execute("SELECT * from Customers WHERE login=?", (login, ))
+    c.execute("SELECT * from Customers WHERE login=?", (login,))
     if c.fetchone() is not None:
         return "login"
 
-    c.execute("SELECT * from Customers WHERE email=?", (email, ))
+    c.execute("SELECT * from Customers WHERE email=?", (email,))
     if c.fetchone() is not None:
         return "mail"
     return False
-
 
 
 def is_customer_id_exist(customer_id) -> bool:
@@ -147,7 +144,6 @@ def customer_perm(login, password):
 
 
 # products ---------------------------------------------------------------
-
 
 
 # returns true or false, whether the product exists

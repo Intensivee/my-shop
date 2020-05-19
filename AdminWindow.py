@@ -1,3 +1,4 @@
+"""Module contains major admin classes"""
 import sqlite3
 import tkinter as tk
 import tkinter.messagebox
@@ -10,8 +11,10 @@ c = conn.cursor()
 
 
 class CustomersMenu:
+    """Main customers window."""
 
     def __init__(self, master):
+        """Creates customers window."""
         self.master = master
         self.master.geometry(globals.ADMIN_WINDOW_SIZE)
         self.master.configure(bg=globals.BACKGROUND)
@@ -33,6 +36,9 @@ class CustomersMenu:
         self.initialize_menu()
 
     def initialize_menu(self):
+        """Initializes customers window.
+
+        Used in other functions repeatedly, that's why it's not in __init__"""
         # Destroying last frame and creating initializing menu
         self.frame.destroy()
         self.frame = tk.Frame(self.master, bg=globals.BACKGROUND)
@@ -50,11 +56,14 @@ class CustomersMenu:
             self.error_label.destroy()
 
         # Create Main Buttons To Chose Which Table You Want To Add
-        c_chose_button = tk.Button(self.frame, text='Customer', command=self.initialize_menu, width=30, bg=globals.FOREGROUND)
+        c_chose_button = tk.Button(self.frame, text='Customer', command=self.initialize_menu, width=30,
+                                   bg=globals.FOREGROUND)
         c_chose_button.grid(row=0, column=0, pady=10)
-        o_chose_button = tk.Button(self.frame, text='Order', command=self.goto_order_window, width=30, bg=globals.FOREGROUND)
+        o_chose_button = tk.Button(self.frame, text='Order', command=self.goto_order_window, width=30,
+                                   bg=globals.FOREGROUND)
         o_chose_button.grid(row=0, column=1, )
-        p_chose_button = tk.Button(self.frame, text='Product', command=self.goto_product_window, width=30, bg=globals.FOREGROUND)
+        p_chose_button = tk.Button(self.frame, text='Product', command=self.goto_product_window, width=30,
+                                   bg=globals.FOREGROUND)
         p_chose_button.grid(row=0, column=2)
 
         # Create text box labels for Customers
@@ -82,13 +91,17 @@ class CustomersMenu:
         self.perm_entry.grid(row=5, column=1)
 
         # search, clear, delete, update, exit buttons
-        search_button = tk.Button(self.entry_frame, text='Search', command=self.search_customer, width=20, bg=globals.FOREGROUND)
+        search_button = tk.Button(self.entry_frame, text='Search', command=self.search_customer, width=20,
+                                  bg=globals.FOREGROUND)
         search_button.grid(row=1, column=2, padx=20)
-        update_button = tk.Button(self.entry_frame, text='Update', command=self.update_customer, width=20, bg=globals.FOREGROUND)
+        update_button = tk.Button(self.entry_frame, text='Update', command=self.update_customer, width=20,
+                                  bg=globals.FOREGROUND)
         update_button.grid(row=2, column=2)
-        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_customer_entrys, width=20, bg=globals.FOREGROUND)
+        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_customer_entrys, width=20,
+                                 bg=globals.FOREGROUND)
         clear_button.grid(row=3, column=2)
-        exit_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_customer, width=20, bg=globals.FOREGROUND)
+        exit_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_customer, width=20,
+                                bg=globals.FOREGROUND)
         exit_button.grid(row=4, column=2)
 
         # creating listbox for customers
@@ -98,7 +111,8 @@ class CustomersMenu:
         list_label = tk.Label(self.listbox_frame, text='list of customers', width=100, bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0)
         scrollbar = tk.Scrollbar(self.listbox_frame)
-        self.listbox = tk.Listbox(self.listbox_frame, width=60, height=15, yscrollcommand=scrollbar.set, bg=globals.FOREGROUND)
+        self.listbox = tk.Listbox(self.listbox_frame, width=60, height=15, yscrollcommand=scrollbar.set,
+                                  bg=globals.FOREGROUND)
         self.listbox.bind('<<ListboxSelect>>', self.get_selected_customer)
         self.listbox.grid(row=1, column=0, padx=8)
 
@@ -108,6 +122,7 @@ class CustomersMenu:
             self.listbox.insert(tk.END, (str(record[0]), record[1], record[2], record[3], record[4], str(record[5])))
 
     def clear_customer_entrys(self):
+        """Clears all entry's."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -118,6 +133,7 @@ class CustomersMenu:
         self.perm_entry.delete(0, tk.END)
 
     def search_customer(self):
+        """Insert's into listbox founded customers"""
         if self.error_label:
             self.error_label.destroy()
 
@@ -128,12 +144,13 @@ class CustomersMenu:
             self.listbox.insert(tk.END, (str(record[0]), record[1], record[2], record[3], record[4], str(record[5])))
 
     def delete_customer(self):
+        """Deletes customer, if selected by cursor."""
         if self.error_label:
             self.error_label.destroy()
 
         # checking if anything is selected from the listbox
         if not self.listbox.curselection():
-            self.error_message("please select one from lisbox.")
+            self.error_message("please select one from listbox.")
             return
 
         # finding selected Customer
@@ -160,6 +177,7 @@ class CustomersMenu:
             self.error_message("record not exists in database.")
 
     def update_customer(self):
+        """Updates customer, if all required entry's are filled properly."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -193,6 +211,7 @@ class CustomersMenu:
             self.initialize_menu()
 
     def get_selected_customer(self, event):
+        """Inserts selected customer data into entry's."""
         self.clear_customer_entrys()
         if self.error_label:
             self.error_label.destroy()
@@ -207,21 +226,26 @@ class CustomersMenu:
         self.perm_entry.insert(tk.END, current_record[5])
 
     def error_message(self, name):
+        """Show's passed message in designated place
+
+            Used to clear code and make it more readable as it is
+            called multiple times."""
         # deleting missing label from last add_order call if it exists
         if self.error_label:
             self.error_label.destroy()
 
-        self.error_label = tk.Label(self.entry_frame, text=("?", (name, )), bg=globals.BACKGROUND)
+        self.error_label = tk.Label(self.entry_frame, text=("?", (name,)), bg=globals.BACKGROUND)
         self.error_label.grid(row=6, column=1)
 
     def goto_order_window(self):
-
+        """Run's order window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
         OrdersMenu(self.master)
 
     def goto_product_window(self):
+        """Run's products window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
@@ -229,7 +253,10 @@ class CustomersMenu:
 
 
 class ProductsMenu:
+    """Main products window."""
+
     def __init__(self, master):
+        """Creates products window."""
         self.master = master
         self.master.geometry(globals.ADMIN_WINDOW_SIZE)
         self.master.configure(bg=globals.BACKGROUND)
@@ -251,6 +278,9 @@ class ProductsMenu:
         self.initialize_menu()
 
     def initialize_menu(self):
+        """Initializes products window.
+
+        Used in other functions repeatedly, that's why it's not in __init__"""
         # Destroying last frame and creating initializing menu
         self.frame.destroy()
         self.frame = tk.Frame(self.master, bg=globals.BACKGROUND)
@@ -268,11 +298,14 @@ class ProductsMenu:
             self.error_label.destroy()
 
         # Create Main Buttons To Chose Which Table You Want To Add
-        c_chose_button = tk.Button(self.frame, text='Customer', command=self.goto_customer_window, width=30, bg=globals.FOREGROUND)
+        c_chose_button = tk.Button(self.frame, text='Customer', command=self.goto_customer_window, width=30,
+                                   bg=globals.FOREGROUND)
         c_chose_button.grid(row=0, column=0, pady=10)
-        o_chose_button = tk.Button(self.frame, text='Order', command=self.goto_order_window, width=30, bg=globals.FOREGROUND)
+        o_chose_button = tk.Button(self.frame, text='Order', command=self.goto_order_window, width=30,
+                                   bg=globals.FOREGROUND)
         o_chose_button.grid(row=0, column=1, )
-        p_chose_button = tk.Button(self.frame, text='Product', command=self.initialize_menu, width=30, bg=globals.FOREGROUND)
+        p_chose_button = tk.Button(self.frame, text='Product', command=self.initialize_menu, width=30,
+                                   bg=globals.FOREGROUND)
         p_chose_button.grid(row=0, column=2)
 
         # Create text box labels for Products
@@ -299,20 +332,25 @@ class ProductsMenu:
         # search_button = Button(self.frame, text='Search for ID', width=20)
         add_button = tk.Button(self.entry_frame, text='Add', command=self.add_product, width=20, bg=globals.FOREGROUND)
         add_button.grid(row=0, column=2, padx=20)
-        search_button = tk.Button(self.entry_frame, text='Search', command=self.search_product, width=20, bg=globals.FOREGROUND)
+        search_button = tk.Button(self.entry_frame, text='Search', command=self.search_product, width=20,
+                                  bg=globals.FOREGROUND)
         search_button.grid(row=1, column=2)
-        update_button = tk.Button(self.entry_frame, text='Update', command=self.update_product, width=20, bg=globals.FOREGROUND)
+        update_button = tk.Button(self.entry_frame, text='Update', command=self.update_product, width=20,
+                                  bg=globals.FOREGROUND)
         update_button.grid(row=2, column=2)
-        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_product_entrys, width=20, bg=globals.FOREGROUND)
+        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_product_entrys, width=20,
+                                 bg=globals.FOREGROUND)
         clear_button.grid(row=3, column=2)
-        delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_product, width=20, bg=globals.FOREGROUND)
+        delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_product, width=20,
+                                  bg=globals.FOREGROUND)
         delete_button.grid(row=4, column=2)
 
         # creating listbox for customers
         list_label = tk.Label(self.listbox_frame, text='list of products', width=100, bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0)
         scrollbar = tk.Scrollbar(self.listbox_frame)
-        self.listbox = tk.Listbox(self.listbox_frame, width=60, height=15, yscrollcommand=scrollbar.set, bg=globals.FOREGROUND)
+        self.listbox = tk.Listbox(self.listbox_frame, width=60, height=15, yscrollcommand=scrollbar.set,
+                                  bg=globals.FOREGROUND)
         self.listbox.bind('<<ListboxSelect>>', self.get_selected_product)
         self.listbox.grid(row=1, column=0, padx=8)
 
@@ -322,6 +360,7 @@ class ProductsMenu:
             self.listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3]), record[4]))
 
     def clear_product_entrys(self):
+        """Clears all entry's."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -331,6 +370,7 @@ class ProductsMenu:
         self.description_entry.delete(0, tk.END)
 
     def add_product(self):
+        """Adds new product, if all required entry's are filled properly."""
         # deleting missing label from last add_order call, if it exists
         if self.error_label:
             self.error_label.destroy()
@@ -358,6 +398,7 @@ class ProductsMenu:
                     self.initialize_menu()
 
     def search_product(self):
+        """Insert's into listbox founded products"""
         if self.error_label:
             self.error_label.destroy()
 
@@ -368,6 +409,7 @@ class ProductsMenu:
             self.listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3]), record[4]))
 
     def delete_product(self):
+        """Deletes product, if selected by cursor."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -400,6 +442,7 @@ class ProductsMenu:
             self.error_message("record not exists in database.")
 
     def update_product(self):
+        """Updates product, if all required entry's are filled properly."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -427,6 +470,7 @@ class ProductsMenu:
             self.initialize_menu()
 
     def get_selected_product(self, event):
+        """Inserts selected product data into entry's."""
         self.clear_product_entrys()
         if self.error_label:
             self.error_label.destroy()
@@ -440,6 +484,10 @@ class ProductsMenu:
         self.description_entry.insert(tk.END, current_record[4])
 
     def error_message(self, name):
+        """Show's passed message in designated place
+
+            Used to clear code and make it more readable as it is
+            called multiple times."""
         # deleting missing label from last add_order call if it exists
         if self.error_label:
             self.error_label.destroy()
@@ -448,12 +496,14 @@ class ProductsMenu:
         self.error_label.grid(row=4, column=1)
 
     def goto_order_window(self):
+        """Run's order window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
         OrdersMenu(self.master)
 
     def goto_customer_window(self):
+        """Run's customer window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
@@ -461,7 +511,10 @@ class ProductsMenu:
 
 
 class OrdersMenu:
+    """Main orders window."""
+
     def __init__(self, master):
+        """Creates orders window."""
         self.master = master
         self.master.geometry(globals.ADMIN_WINDOW_SIZE)
         self.master.configure(bg=globals.BACKGROUND)
@@ -483,6 +536,9 @@ class OrdersMenu:
         self.initialize_menu()
 
     def initialize_menu(self):
+        """Initializes orders window.
+
+        Used in other functions repeatedly, that's why it's not in __init__"""
         # Destroying last frame and creating initializing menu
         self.frame.destroy()
         self.frame = tk.Frame(self.master, bg=globals.BACKGROUND)
@@ -500,11 +556,14 @@ class OrdersMenu:
             self.error_label.destroy()
 
         # Create Main Buttons To Chose Which Table You Want To Add
-        c_chose_button = tk.Button(self.frame, text='Customer', command=self.goto_customer_window, width=30, bg=globals.FOREGROUND)
+        c_chose_button = tk.Button(self.frame, text='Customer', command=self.goto_customer_window, width=30,
+                                   bg=globals.FOREGROUND)
         c_chose_button.grid(row=0, column=0, pady=10)
-        o_chose_button = tk.Button(self.frame, text='Order', command=self.initialize_menu, width=30, bg=globals.FOREGROUND)
+        o_chose_button = tk.Button(self.frame, text='Order', command=self.initialize_menu, width=30,
+                                   bg=globals.FOREGROUND)
         o_chose_button.grid(row=0, column=1, )
-        p_chose_button = tk.Button(self.frame, text='Product', command=self.goto_product_window, width=30, bg=globals.FOREGROUND)
+        p_chose_button = tk.Button(self.frame, text='Product', command=self.goto_product_window, width=30,
+                                   bg=globals.FOREGROUND)
         p_chose_button.grid(row=0, column=2)
 
         # Create text box labels for Orders
@@ -536,15 +595,19 @@ class OrdersMenu:
         self.location_entry.grid(row=5, column=1)
 
         # buttons
-        search_button = tk.Button(self.entry_frame, text='Search', command=self.search_order, width=20, bg=globals.FOREGROUND)
+        search_button = tk.Button(self.entry_frame, text='Search', command=self.search_order, width=20,
+                                  bg=globals.FOREGROUND)
         search_button.grid(row=0, column=2, padx=20)
         add_button = tk.Button(self.entry_frame, text='Add', command=self.add_order, width=20, bg=globals.FOREGROUND)
         add_button.grid(row=1, column=2, padx=20)
-        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.initialize_menu, width=20, bg=globals.FOREGROUND)
+        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.initialize_menu, width=20,
+                                 bg=globals.FOREGROUND)
         clear_button.grid(row=2, column=2)
-        delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_order, width=20, bg=globals.FOREGROUND)
+        delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_order, width=20,
+                                  bg=globals.FOREGROUND)
         delete_button.grid(row=3, column=2)
-        exit_button = tk.Button(self.entry_frame, text='Exit', command=self.master.destroy, width=20, bg=globals.FOREGROUND)
+        exit_button = tk.Button(self.entry_frame, text='Exit', command=self.master.destroy, width=20,
+                                bg=globals.FOREGROUND)
         exit_button.grid(row=4, column=2)
 
         # Listbox'es
@@ -552,7 +615,8 @@ class OrdersMenu:
         list_label = tk.Label(self.listbox_frame, text='list of orders', bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0)
         scrollbar = tk.Scrollbar(self.listbox_frame)
-        self.order_listbox = tk.Listbox(self.listbox_frame, width=50, height=15, yscrollcommand=scrollbar.set, bg=globals.FOREGROUND)
+        self.order_listbox = tk.Listbox(self.listbox_frame, width=50, height=15, yscrollcommand=scrollbar.set,
+                                        bg=globals.FOREGROUND)
         self.order_listbox.bind('<<ListboxSelect>>', self.order_list_manager)
         self.order_listbox.grid(row=1, column=0, padx=8)
 
@@ -594,6 +658,7 @@ class OrdersMenu:
         # adding records from DB to Listbox
 
     def add_order(self):
+        """Place new order, if all required entry's are filled."""
         # deleting missing label from last add_order call if it exists
         if self.error_label:
             self.error_label.destroy()
@@ -626,6 +691,7 @@ class OrdersMenu:
             self.error_message("insufficient number of products on disposal")
 
     def delete_order(self):
+        """Deletes customer, if selected by cursor."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -646,6 +712,7 @@ class OrdersMenu:
             self.initialize_menu()
 
     def search_order(self):
+        """Insert's into listbox founded orders"""
         if self.error_label:
             self.error_label.destroy()
 
@@ -658,6 +725,7 @@ class OrdersMenu:
                 str(record[7]), record[8]))
 
     def order_list_manager(self, event):
+        """Inserts into lists product and customer of selected order."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -691,6 +759,7 @@ class OrdersMenu:
             self.product_listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3])))
 
     def product_list_manager(self, event):
+        """Inserts into list orders of that selected product."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -710,6 +779,7 @@ class OrdersMenu:
                     str(record[7]), record[8]))
 
     def customer_list_manager(self, event):
+        """Inserts into list orders of that selected customer."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -729,6 +799,10 @@ class OrdersMenu:
                     str(record[7]), record[8]))
 
     def error_message(self, name):
+        """Show's passed message in designated place
+
+            Used to clear code and make it more readable as it is
+            called multiple times."""
         # deleting missing label from last add_order call if it exists
         if self.error_label:
             self.error_label.destroy()
@@ -737,12 +811,14 @@ class OrdersMenu:
         self.error_label.grid(row=11, column=1)
 
     def goto_customer_window(self):
+        """Run's customer window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
         CustomersMenu(self.master)
 
     def goto_product_window(self):
+        """Run's product window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()

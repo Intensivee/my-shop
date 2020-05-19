@@ -1,10 +1,11 @@
-"""Main module - runs the app."""
+"""Main module, that runs the app."""
 import tkinter as tk
 
 import LoginWindow
 
 
 def main():
+    """Create and maintains the window."""
     root = tk.Tk()
     app = LoginWindow.LoginWindow(root)
     root.mainloop()
