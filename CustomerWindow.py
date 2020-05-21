@@ -83,7 +83,6 @@ class CustomerApp:
             self.product_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
             self.product_tree.heading(cols, text=cols)
 
-
         scrollbar = tk.Scrollbar(self.function_frame, orient=tk.VERTICAL)
         scrollbar.configure(command=self.product_tree.set)
         self.product_tree.configure(yscrollcommand=scrollbar)

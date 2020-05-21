@@ -2,6 +2,7 @@
 import sqlite3
 import tkinter as tk
 import tkinter.messagebox
+from tkinter.ttk import Treeview
 
 import dbmanager as db
 import globals
@@ -31,6 +32,9 @@ class CustomersMenu:
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
+
+        self.customers_columns = ('Id', 'Login', 'Name', 'phone', 'Email', 'perm')
+        self.customers_columns_size = ((25, 25), (120, 120), (150, 150), (90, 90), (200, 200), (35, 35))
 
         self.initialize_menu()
 
@@ -109,16 +113,25 @@ class CustomersMenu:
 
         list_label = tk.Label(self.listbox_frame, text='list of customers', width=100, bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0)
-        scrollbar = tk.Scrollbar(self.listbox_frame)
-        self.listbox = tk.Listbox(self.listbox_frame, width=60, height=15, yscrollcommand=scrollbar.set,
-                                  bg=globals.FOREGROUND)
-        self.listbox.bind('<<ListboxSelect>>', self.get_selected_customer)
-        self.listbox.grid(row=1, column=0, padx=8)
 
-        # adding records from DB to Listbox
+        # creating treeview
+        self.customers_tree = Treeview(self.listbox_frame, columns=self.customers_columns, show='headings', height=10)
+        self.customers_tree.grid(row=1, column=0)
+
+        for cols, width in zip(self.customers_columns, self.customers_columns_size):
+            self.customers_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
+            self.customers_tree.heading(cols, text=cols)
+
+        scrollbar = tk.Scrollbar(self.listbox_frame, orient=tk.VERTICAL)
+        scrollbar.configure(command=self.customers_tree.set)
+        self.customers_tree.configure(yscrollcommand=scrollbar)
+        self.customers_tree.bind('<ButtonRelease-1>', self.get_selected_customer)
+
+        # adding records from DB to list
         records = db.return_customers()
         for record in records:
-            self.listbox.insert(tk.END, (str(record[0]), record[1], record[2], record[3], record[4], str(record[5])))
+            # self.orders_tree.insert('', tk.END, values=[str(record[0]), record[1], record[2], record[3], record[4], str(record[5])])
+            self.customers_tree.insert('', tk.END, values=record)
 
     def clear_customer_entrys(self):
         """Clears all entry's."""
@@ -133,14 +146,20 @@ class CustomersMenu:
 
     def search_customer(self):
         """Insert's into listbox founded customers"""
-        if self.error_label:
-            self.error_label.destroy()
+        try:
+            if self.error_label:
+                self.error_label.destroy()
 
-        records = db.search_customer(self.login_entry.get(), self.name_entry.get(), self.phone_entry.get(),
-                                     self.email_entry.get(), self.perm_entry.get())
-        self.listbox.delete(0, tk.END)
-        for record in records:
-            self.listbox.insert(tk.END, (str(record[0]), record[1], record[2], record[3], record[4], str(record[5])))
+            records = db.search_customer(self.login_entry.get(), self.name_entry.get(), self.phone_entry.get(),
+                                         self.email_entry.get(), self.perm_entry.get())
+
+            for i in self.customers_tree.get_children():
+                self.customers_tree.delete(i)
+            for record in records:
+                self.customers_tree.insert('', tk.END, values=record)
+
+        except KeyError:
+            pass
 
     def delete_customer(self):
         """Deletes customer, if selected by cursor."""
@@ -148,14 +167,13 @@ class CustomersMenu:
             self.error_label.destroy()
 
         # checking if anything is selected from the listbox
-        if not self.listbox.curselection():
+        if not self.customers_tree.selection():
             self.error_message("please select one from listbox.")
             return
 
         # finding selected Customer
-        index = self.listbox.curselection()[0]
-        selected_record = self.listbox.get(index)
-        records = db.delete_customer(selected_record[0], 1)
+        selected_record = self.customers_tree.set(self.customers_tree.selection())
+        records = db.delete_customer(selected_record[self.customers_columns[0]], 1)
 
         # if there is record in DB with such id
         if records:
@@ -167,7 +185,7 @@ class CustomersMenu:
             # window asking to delete
             answer = tkinter.messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(customer_info))
             if answer == 'yes':
-                db.delete_customer(selected_record[0], 0)
+                db.delete_customer(selected_record[self.customers_columns[0]], 0)
                 # refreshing all
                 self.initialize_menu()
 
@@ -181,7 +199,7 @@ class CustomersMenu:
             self.error_label.destroy()
 
         # checking if any record from LISTBOX is selected
-        if not self.listbox.curselection():
+        if not self.customers_tree.selection():
             self.error_message("please select one from listbox.")
             return
 
@@ -201,9 +219,8 @@ class CustomersMenu:
 
         # everything is filled finally updating
         else:
-            index = self.listbox.curselection()[0]
-            current_record = self.listbox.get(index)
-            db.update_customer(current_record[0], self.login_entry.get(), self.name_entry.get(),
+            current_record = self.customers_tree.set(self.customers_tree.selection())
+            db.update_customer(current_record[self.customers_columns[0]], self.login_entry.get(), self.name_entry.get(),
                                self.email_entry.get(), self.phone_entry.get(), self.perm_entry.get())
 
             # refresh all
@@ -215,14 +232,13 @@ class CustomersMenu:
         if self.error_label:
             self.error_label.destroy()
 
-        search = self.listbox.curselection()[0]
-        current_record = self.listbox.get(search)
+        record = self.customers_tree.set(self.customers_tree.selection())
 
-        self.login_entry.insert(tk.END, current_record[1])
-        self.name_entry.insert(tk.END, current_record[2])
-        self.phone_entry.insert(tk.END, current_record[3])
-        self.email_entry.insert(tk.END, current_record[4])
-        self.perm_entry.insert(tk.END, current_record[5])
+        self.login_entry.insert(tk.END, record[self.customers_columns[1]])
+        self.name_entry.insert(tk.END, record[self.customers_columns[2]])
+        self.phone_entry.insert(tk.END, record[self.customers_columns[3]])
+        self.email_entry.insert(tk.END, record[self.customers_columns[4]])
+        self.perm_entry.insert(tk.END, record[self.customers_columns[5]])
 
     def error_message(self, name):
         """Show's passed message in designated place
@@ -273,6 +289,9 @@ class ProductsMenu:
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
+
+        self.products_columns = ('Id', 'Product name', 'Price', 'In stock', 'Description')
+        self.products_columns_size = [(25, 25), (150, 150), (50, 50), (50, 50), (250, 250)]
 
         self.initialize_menu()
 
@@ -344,19 +363,29 @@ class ProductsMenu:
                                   bg=globals.FOREGROUND)
         delete_button.grid(row=4, column=2)
 
-        # creating listbox for customers
+
         list_label = tk.Label(self.listbox_frame, text='list of products', width=100, bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0)
-        scrollbar = tk.Scrollbar(self.listbox_frame)
-        self.listbox = tk.Listbox(self.listbox_frame, width=60, height=15, yscrollcommand=scrollbar.set,
-                                  bg=globals.FOREGROUND)
-        self.listbox.bind('<<ListboxSelect>>', self.get_selected_product)
-        self.listbox.grid(row=1, column=0, padx=8)
+
+        # creating treeview
+        self.product_tree = Treeview(self.listbox_frame, columns=self.products_columns, show='headings', height=10)
+        self.product_tree.grid(row=1, column=0)
+
+        for cols, width in zip(self.products_columns, self.products_columns_size):
+            self.product_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
+            self.product_tree.heading(cols, text=cols)
+
+
+        scrollbar = tk.Scrollbar(self.listbox_frame, orient=tk.VERTICAL)
+        scrollbar.configure(command=self.product_tree.set)
+        self.product_tree.configure(yscrollcommand=scrollbar)
+        self.product_tree.bind('<ButtonRelease-1>', self.get_selected_product)
 
         # adding records from DB to Listbox
         records = db.return_products()
         for record in records:
-            self.listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3]), record[4]))
+            # self.product_tree.insert('', tk.END, values=[record[0], record[1], record[2], record[3], record[4]])
+            self.product_tree.insert('', tk.END, values=record)
 
     def clear_product_entrys(self):
         """Clears all entry's."""
@@ -400,11 +429,18 @@ class ProductsMenu:
         if self.error_label:
             self.error_label.destroy()
 
-        self.listbox.delete(0, tk.END)
-        records = db.search_products(self.product_name_entry.get(), self.product_price_entry.get(),
-                                     self.in_stock_entry.get(), self.description_entry.get())
-        for record in records:
-            self.listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3]), record[4]))
+        try:
+            for i in self.product_tree.get_children():
+                self.product_tree.delete(i)
+
+            records = db.search_products(self.product_name_entry.get(), self.product_price_entry.get(),
+                                         self.in_stock_entry.get(), self.description_entry.get())
+            for record in records:
+                # self.product_tree.insert('', tk.END, values=[record[0], record[1], record[2], record[3], record[4]])
+                self.product_tree.insert('', tk.END, values=record)
+
+        except KeyError:
+            pass
 
     def delete_product(self):
         """Deletes product, if selected by cursor."""
@@ -412,14 +448,13 @@ class ProductsMenu:
             self.error_label.destroy()
 
         # checking if anything is selected
-        if not self.listbox.curselection():
+        if not self.product_tree.selection():
             self.error_message("please select one from listbox.")
             return
 
         # finding selected product
-        index = self.listbox.curselection()[0]
-        selected_record = self.listbox.get(index)
-        records = db.delete_product(selected_record[0], 1)
+        selected_record = self.product_tree.set(self.product_tree.selection())
+        records = db.delete_product(selected_record[self.products_columns[0]], 1)
 
         # if there is record in DB with such id
         if records:
@@ -431,7 +466,7 @@ class ProductsMenu:
             # window asking to delete
             answer = tkinter.messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(product_info))
             if answer == 'yes':
-                db.delete_product(selected_record[0], 0)
+                db.delete_product(selected_record[self.products_columns[0]], 0)
                 # refreshing all
                 self.initialize_menu()
 
@@ -441,45 +476,49 @@ class ProductsMenu:
 
     def update_product(self):
         """Updates product, if all required entry's are filled properly."""
-        if self.error_label:
-            self.error_label.destroy()
+        try:
+            if self.error_label:
+                self.error_label.destroy()
 
-        # checking if any record from LISTBOX is selected
-        if not self.listbox.curselection():
-            self.error_message("please select one from listbox.")
-            return
+            # checking if any record from LISTBOX is selected
+            if not self.product_tree.selection():
+                self.error_message("please select one from listbox.")
+                return
 
-        # checking if all required entry's are filled correctly
-        if self.product_name_entry.get() == '':
-            self.error_message("'product name' missing")
-        elif not globals.is_float(self.product_price_entry.get()) or float(self.product_price_entry.get()) < 1.0:
-            self.error_message("'product price' must be positive int")
-        elif not globals.is_integer(self.in_stock_entry.get()) or int(self.in_stock_entry.get()) < 0:
-            self.error_message("'in stock' value must be non negative int")
+            # checking if all required entry's are filled correctly
+            if self.product_name_entry.get() == '':
+                self.error_message("'product name' missing")
+            elif not globals.is_float(self.product_price_entry.get()) or float(self.product_price_entry.get()) < 1.0:
+                self.error_message("'product price' must be positive int")
+            elif not globals.is_integer(self.in_stock_entry.get()) or int(self.in_stock_entry.get()) < 0:
+                self.error_message("'in stock' value must be non negative int")
 
-        else:
-            # everything is filled updating
-            index = self.listbox.curselection()[0]
-            current_record = self.listbox.get(index)
-            db.update_product(current_record[0], self.product_name_entry.get(), self.product_price_entry.get(),
-                              self.in_stock_entry.get(), self.description_entry.get())
+            else:
+                # everything is filled updating
+                record = self.product_tree.set(self.product_tree.selection())
+                db.update_product(record[self.products_columns[0]], self.product_name_entry.get(), self.product_price_entry.get(),
+                                  self.in_stock_entry.get(), self.description_entry.get())
 
-            # refresh all
-            self.initialize_menu()
+                # refresh all
+                self.initialize_menu()
+        except KeyError:
+            pass
 
     def get_selected_product(self, event):
         """Inserts selected product data into entry's."""
         self.clear_product_entrys()
         if self.error_label:
             self.error_label.destroy()
+        try:
+            if self.product_tree.selection() != ():
+                record = self.product_tree.set(self.product_tree.selection())
+                self.product_name_entry.insert(tk.END, record[self.products_columns[1]])
+                self.product_price_entry.insert(tk.END, record[self.products_columns[2]])
+                self.in_stock_entry.insert(tk.END, record[self.products_columns[3]])
+                self.description_entry.insert(tk.END, record[self.products_columns[4]])
 
-        search = self.listbox.curselection()[0]
-        current_record = self.listbox.get(search)
-
-        self.product_name_entry.insert(tk.END, current_record[1])
-        self.product_price_entry.insert(tk.END, current_record[2])
-        self.in_stock_entry.insert(tk.END, current_record[3])
-        self.description_entry.insert(tk.END, current_record[4])
+        except KeyError:
+            pass
 
     def error_message(self, name):
         """Show's passed message in designated place
