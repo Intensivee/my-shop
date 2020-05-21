@@ -77,9 +77,10 @@ def add_customer(login, password, name, phone, email):
 
 def return_customers():
     """Returns list of all customers in DB."""
-    c.execute("SELECT id_customer,login,customer_name,phone,email,perm FROM Customers")
-    rows = c.fetchall()
-    return rows
+    with conn:
+        c.execute("SELECT id_customer,login,customer_name,phone,email,perm FROM Customers")
+        rows = c.fetchall()
+        return rows
 
 
 def return_customer(customer_id):
@@ -280,12 +281,12 @@ def delete_order(order_id):
         c.execute("DELETE FROM Orders WHERE id_order=?", (order_id,))
 
 
-def search_orders(product_id='', customer_id='', quantity='', send='', loc=''):
+def search_orders(product_id='', customer_id='', quantity='', pay='', send='', location=''):
     """Returns orders that meet at least 1 of passed args."""
     with conn:
         c.execute("""SELECT * FROM Orders WHERE id_customer=? OR id_product=? OR quantity=?
-                 OR send_status=? OR location=?""",
-                  (product_id, customer_id, quantity, send, loc))
+                 OR payment_status=? OR send_status=? OR location=?""",
+                  (product_id, customer_id, quantity, pay, send, location))
     return c.fetchall()
 
 

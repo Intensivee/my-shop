@@ -3,13 +3,11 @@
 my_id = -1
 
 APP_NAME = "Mendiona bytes"
+ADMIN_PERM = 1
 
-BACKGROUND = 'SkyBlue1'
-FOREGROUND = 'LightSkyBlue1'
+BACKGROUND = 'AntiqueWhite3'
+FOREGROUND = 'AntiqueWhite1'
 
-CUSTOMER_WINDOW_SIZE = "650x600"
-ADMIN_WINDOW_SIZE = "1000x640"
-LOGIN_WINDOW_SIZE = "300x200"
 
 
 def is_float(value):

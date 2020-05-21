@@ -7,7 +7,20 @@ from tkinter.ttk import Treeview
 import dbmanager as db
 import globals
 
+# Module Constants:
+ADMIN_WINDOW_SIZE = "1000x640"
 
+CUSTOMER_COLUMNS = ('Id', 'Name', 'Email')
+CUSTOMER_COLUMNS_SIZE = (25, 150, 200)
+
+CUSTOMER_COLUMN_FULL = ('Id', 'Login', 'Name', 'phone', 'Email', 'perm')
+CUSTOMER_COLUMN_FULL_SIZE = (25, 120, 150, 90, 200, 35)
+
+PRODUCT_COLUMNS = ('Id', 'Product name', 'Price', 'In stock', 'Description')
+PRODUCT_COLUMNS_SIZE = (25, 120, 50, 50, 130)
+
+ORDER_COLUMNS = ('Id', 'quantity', 'payment', 'send', 'location', 'date')
+ORDER_COLUMNS_SIZE = (25, 60, 60, 40, 200, 120)
 
 
 class CustomersMenu:
@@ -16,7 +29,7 @@ class CustomersMenu:
     def __init__(self, master):
         """Creates customers window."""
         self.master = master
-        self.master.geometry(globals.ADMIN_WINDOW_SIZE)
+        self.master.geometry(ADMIN_WINDOW_SIZE)
         self.master.configure(bg=globals.BACKGROUND)
         self.master.title(globals.APP_NAME)
 
@@ -32,9 +45,6 @@ class CustomersMenu:
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
-
-        self.customers_columns = ('Id', 'Login', 'Name', 'phone', 'Email', 'perm')
-        self.customers_columns_size = ((25, 25), (120, 120), (150, 150), (90, 90), (200, 200), (35, 35))
 
         self.initialize_menu()
 
@@ -115,12 +125,12 @@ class CustomersMenu:
         list_label.grid(row=0, column=0)
 
         # creating treeview
-        self.customers_tree = Treeview(self.listbox_frame, columns=self.customers_columns, show='headings', height=10)
+        self.customers_tree = Treeview(self.listbox_frame, columns=CUSTOMER_COLUMN_FULL, show='headings', height=10)
         self.customers_tree.grid(row=1, column=0)
 
-        for cols, width in zip(self.customers_columns, self.customers_columns_size):
-            self.customers_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
-            self.customers_tree.heading(cols, text=cols)
+        for column_name, width in zip(CUSTOMER_COLUMN_FULL, CUSTOMER_COLUMN_FULL_SIZE):
+            self.customers_tree.column(column_name, width=width, anchor=tk.CENTER)
+            self.customers_tree.heading(column_name, text=column_name)
 
         scrollbar = tk.Scrollbar(self.listbox_frame, orient=tk.VERTICAL)
         scrollbar.configure(command=self.customers_tree.set)
@@ -173,7 +183,7 @@ class CustomersMenu:
 
         # finding selected Customer
         selected_record = self.customers_tree.set(self.customers_tree.selection())
-        records = db.delete_customer(selected_record[self.customers_columns[0]], 1)
+        records = db.delete_customer(selected_record[CUSTOMER_COLUMN_FULL[0]], 1)
 
         # if there is record in DB with such id
         if records:
@@ -185,7 +195,7 @@ class CustomersMenu:
             # window asking to delete
             answer = tkinter.messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(customer_info))
             if answer == 'yes':
-                db.delete_customer(selected_record[self.customers_columns[0]], 0)
+                db.delete_customer(selected_record[CUSTOMER_COLUMN_FULL[0]], 0)
                 # refreshing all
                 self.initialize_menu()
 
@@ -220,7 +230,7 @@ class CustomersMenu:
         # everything is filled finally updating
         else:
             current_record = self.customers_tree.set(self.customers_tree.selection())
-            db.update_customer(current_record[self.customers_columns[0]], self.login_entry.get(), self.name_entry.get(),
+            db.update_customer(current_record[CUSTOMER_COLUMN_FULL[0]], self.login_entry.get(), self.name_entry.get(),
                                self.email_entry.get(), self.phone_entry.get(), self.perm_entry.get())
 
             # refresh all
@@ -234,11 +244,11 @@ class CustomersMenu:
 
         record = self.customers_tree.set(self.customers_tree.selection())
 
-        self.login_entry.insert(tk.END, record[self.customers_columns[1]])
-        self.name_entry.insert(tk.END, record[self.customers_columns[2]])
-        self.phone_entry.insert(tk.END, record[self.customers_columns[3]])
-        self.email_entry.insert(tk.END, record[self.customers_columns[4]])
-        self.perm_entry.insert(tk.END, record[self.customers_columns[5]])
+        self.login_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[1]])
+        self.name_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[2]])
+        self.phone_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[3]])
+        self.email_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[4]])
+        self.perm_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[5]])
 
     def error_message(self, name):
         """Show's passed message in designated place
@@ -273,7 +283,7 @@ class ProductsMenu:
     def __init__(self, master):
         """Creates products window."""
         self.master = master
-        self.master.geometry(globals.ADMIN_WINDOW_SIZE)
+        self.master.geometry(ADMIN_WINDOW_SIZE)
         self.master.configure(bg=globals.BACKGROUND)
         self.master.title(globals.APP_NAME)
 
@@ -289,9 +299,6 @@ class ProductsMenu:
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
-
-        self.products_columns = ('Id', 'Product name', 'Price', 'In stock', 'Description')
-        self.products_columns_size = [(25, 25), (150, 150), (50, 50), (50, 50), (250, 250)]
 
         self.initialize_menu()
 
@@ -368,12 +375,12 @@ class ProductsMenu:
         list_label.grid(row=0, column=0)
 
         # creating treeview
-        self.product_tree = Treeview(self.listbox_frame, columns=self.products_columns, show='headings', height=10)
+        self.product_tree = Treeview(self.listbox_frame, columns=PRODUCT_COLUMNS, show='headings', height=10)
         self.product_tree.grid(row=1, column=0)
 
-        for cols, width in zip(self.products_columns, self.products_columns_size):
-            self.product_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
-            self.product_tree.heading(cols, text=cols)
+        for column_name, width in zip(PRODUCT_COLUMNS, PRODUCT_COLUMNS_SIZE):
+            self.product_tree.column(column_name, width=width, anchor=tk.CENTER)
+            self.product_tree.heading(column_name, text=column_name)
 
 
         scrollbar = tk.Scrollbar(self.listbox_frame, orient=tk.VERTICAL)
@@ -454,7 +461,7 @@ class ProductsMenu:
 
         # finding selected product
         selected_record = self.product_tree.set(self.product_tree.selection())
-        records = db.delete_product(selected_record[self.products_columns[0]], 1)
+        records = db.delete_product(selected_record[PRODUCT_COLUMNS[0]], 1)
 
         # if there is record in DB with such id
         if records:
@@ -466,7 +473,7 @@ class ProductsMenu:
             # window asking to delete
             answer = tkinter.messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(product_info))
             if answer == 'yes':
-                db.delete_product(selected_record[self.products_columns[0]], 0)
+                db.delete_product(selected_record[PRODUCT_COLUMNS[0]], 0)
                 # refreshing all
                 self.initialize_menu()
 
@@ -496,7 +503,7 @@ class ProductsMenu:
             else:
                 # everything is filled updating
                 record = self.product_tree.set(self.product_tree.selection())
-                db.update_product(record[self.products_columns[0]], self.product_name_entry.get(), self.product_price_entry.get(),
+                db.update_product(record[PRODUCT_COLUMNS[0]], self.product_name_entry.get(), self.product_price_entry.get(),
                                   self.in_stock_entry.get(), self.description_entry.get())
 
                 # refresh all
@@ -512,10 +519,10 @@ class ProductsMenu:
         try:
             if self.product_tree.selection() != ():
                 record = self.product_tree.set(self.product_tree.selection())
-                self.product_name_entry.insert(tk.END, record[self.products_columns[1]])
-                self.product_price_entry.insert(tk.END, record[self.products_columns[2]])
-                self.in_stock_entry.insert(tk.END, record[self.products_columns[3]])
-                self.description_entry.insert(tk.END, record[self.products_columns[4]])
+                self.product_name_entry.insert(tk.END, record[PRODUCT_COLUMNS[1]])
+                self.product_price_entry.insert(tk.END, record[PRODUCT_COLUMNS[2]])
+                self.in_stock_entry.insert(tk.END, record[PRODUCT_COLUMNS[3]])
+                self.description_entry.insert(tk.END, record[PRODUCT_COLUMNS[4]])
 
         except KeyError:
             pass
@@ -553,7 +560,7 @@ class OrdersMenu:
     def __init__(self, master):
         """Creates orders window."""
         self.master = master
-        self.master.geometry(globals.ADMIN_WINDOW_SIZE)
+        self.master.geometry(ADMIN_WINDOW_SIZE)
         self.master.configure(bg=globals.BACKGROUND)
         self.master.title(globals.APP_NAME)
 
@@ -571,15 +578,6 @@ class OrdersMenu:
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
-
-        self.orders_columns = ('Id_o', "Id_u", "id_p", 'quantity', 'payment', 'send', 'date', 'location')
-        self.orders_columns_size = [(30, 30), (30, 30), (30, 30), (60, 60), (60, 60), (40, 40), (120, 120), (200, 200)]
-
-        self.customers_columns = ('Id', 'Name', 'Email')
-        self.customers_columns_size = [(25, 25), (150, 150), (200, 200)]
-
-        self.products_columns = ('Id', 'Product name', 'Price', 'In stock', 'Description')
-        self.products_columns_size = [(25, 25), (120, 120), (50, 50), (50, 50), (130, 130)]
 
         self.initialize_menu()
 
@@ -668,7 +666,7 @@ class OrdersMenu:
         list_label = tk.Label(self.orders_frame, text='Orders', bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0)
 
-        self.order_tree = Treeview(self.orders_frame, columns=self.orders_columns, show='headings', height=8)
+        self.order_tree = Treeview(self.orders_frame, columns=ORDER_COLUMNS, show='headings', height=8)
         self.order_tree.grid(row=1, column=0, padx=100)
 
         scrollbar_y = tk.Scrollbar(self.orders_frame, orient=tk.VERTICAL)
@@ -679,15 +677,15 @@ class OrdersMenu:
         self.order_tree.configure(xscrollcommand=scrollbar_x)
         self.order_tree.bind('<ButtonRelease-1>', self.order_list_manager)
 
-        for cols, width in zip(self.orders_columns, self.orders_columns_size):
-            self.order_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
-            self.order_tree.heading(cols, text=cols)
+        for column_name, width in zip(ORDER_COLUMNS, ORDER_COLUMNS_SIZE):
+            self.order_tree.column(column_name, width=width, anchor=tk.CENTER)
+            self.order_tree.heading(column_name, text=column_name)
 
         #  =================creating treeview (products) =======================
         list_label1 = tk.Label(self.products_customers_frame, text='Products', width=25, bg=globals.BACKGROUND)
         list_label1.grid(row=0, column=0)
 
-        self.product_tree = Treeview(self.products_customers_frame, columns=self.products_columns, show='headings', height=8)
+        self.product_tree = Treeview(self.products_customers_frame, columns=PRODUCT_COLUMNS, show='headings', height=8)
         self.product_tree.grid(row=1, column=0, padx=10)
         scrollbar_y = tk.Scrollbar(self.products_customers_frame, orient=tk.VERTICAL)
         scrollbar_y.configure(command=self.product_tree.set)
@@ -697,14 +695,14 @@ class OrdersMenu:
         self.product_tree.configure(xscrollcommand=scrollbar_x)
         self.product_tree.bind('<ButtonRelease-1>', self.product_list_manager)
 
-        for cols, width in zip(self.products_columns, self.products_columns_size):
-            self.product_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
-            self.product_tree.heading(cols, text=cols)
+        for column_name, width in zip(PRODUCT_COLUMNS, PRODUCT_COLUMNS_SIZE):
+            self.product_tree.column(column_name, width=width, anchor=tk.CENTER)
+            self.product_tree.heading(column_name, text=column_name)
 
         #  =================creating treeview (customers) =======================
         list_label2 = tk.Label(self.products_customers_frame, text='Customers', width=25, bg=globals.BACKGROUND)
         list_label2.grid(row=0, column=1)
-        self.customers_tree = Treeview(self.products_customers_frame, columns=self.customers_columns, show='headings', height=8)
+        self.customers_tree = Treeview(self.products_customers_frame, columns=CUSTOMER_COLUMNS, show='headings', height=8)
         self.customers_tree.grid(row=1, column=1)
 
         scrollbar_y = tk.Scrollbar(self.products_customers_frame, orient=tk.VERTICAL)
@@ -715,16 +713,15 @@ class OrdersMenu:
         self.customers_tree.configure(xscrollcommand=scrollbar_x)
         self.customers_tree.bind('<ButtonRelease-1>', self.customer_list_manager)
 
-        for cols, width in zip(self.customers_columns, self.customers_columns_size):
-            self.customers_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
-            self.customers_tree.heading(cols, text=cols)
+        for column_name, width in zip(CUSTOMER_COLUMNS, CUSTOMER_COLUMNS_SIZE):
+            self.customers_tree.column(column_name, width=width, anchor=tk.CENTER)
+            self.customers_tree.heading(column_name, text=column_name)
 
         # adding records from DB to List (orders)
         records = db.return_orders()
         for record in records:
             self.order_tree.insert('', tk.END, values=[
-                record[0], record[1], record[2], record[3], record[5], record[6],
-                record[7], record[8]])
+                record[0], record[3], record[5], record[6], record[8], record[7]])
 
         # adding records from DB to List (products)
         records = db.return_products()
@@ -783,7 +780,7 @@ class OrdersMenu:
         answer = tkinter.messagebox.askquestion('myShop DBMS', 'Delete:\n')
         if answer == 'yes':
             selected_record = self.order_tree.set(self.order_tree.selection())
-            db.delete_order(selected_record[self.orders_columns[0]])
+            db.delete_order(selected_record[ORDER_COLUMNS[0]])
 
             self.initialize_menu()
 
@@ -792,15 +789,15 @@ class OrdersMenu:
         if self.error_label:
             self.error_label.destroy()
 
-        records = db.search_orders(self.id_product_entry.get(), self.id_customer_entry.get(), self.quantity_entry.get(),
-                                   self.payment_status_entry.get(), self.location_entry.get())
+        records = db.search_orders(self.id_product_entry.get(), self.id_customer_entry.get(),
+                                   self.quantity_entry.get(), self.payment_status_entry.get(),
+                                   self.send_status_entry.get(), self.location_entry.get())
 
         for i in self.order_tree.get_children():
             self.order_tree.delete(i)
         for record in records:
             self.order_tree.insert('', tk.END, values=[
-                record[0], record[1], record[2], record[3], record[5], record[6],
-                record[7], record[8]])
+                record[0], record[3], record[5], record[6], record[8], record[7]])
 
     def order_list_manager(self, event):
         """Inserts into lists product and customer of selected order."""
@@ -818,21 +815,23 @@ class OrdersMenu:
             self.send_status_entry.delete(0, tk.END)
             self.location_entry.delete(0, tk.END)
 
-            self.id_customer_entry.insert(tk.END, current_record[self.orders_columns[1]])
-            self.id_product_entry.insert(tk.END, current_record[self.orders_columns[2]])
-            self.quantity_entry.insert(tk.END, current_record[self.orders_columns[3]])
-            self.payment_status_entry.insert(tk.END, current_record[self.orders_columns[4]])
-            self.send_status_entry.insert(tk.END, current_record[self.orders_columns[5]])
-            self.location_entry.insert(tk.END, current_record[self.orders_columns[7]])
+            order_data = db.return_order(current_record[ORDER_COLUMNS[0]])
+            self.id_customer_entry.insert(tk.END, order_data[1])
+            self.id_product_entry.insert(tk.END, order_data[2])
+
+            self.quantity_entry.insert(tk.END, current_record[ORDER_COLUMNS[1]])
+            self.payment_status_entry.insert(tk.END, current_record[ORDER_COLUMNS[2]])
+            self.send_status_entry.insert(tk.END, current_record[ORDER_COLUMNS[3]])
+            self.location_entry.insert(tk.END, current_record[ORDER_COLUMNS[4]])
 
             # inserting customer info
-            record = db.return_customer(current_record[self.orders_columns[1]])
+            record = db.return_customer(order_data[1])
             for i in self.customers_tree.get_children():
                 self.customers_tree.delete(i)
-            self.customers_tree.insert('', tk.END, values=[record[0], record[2], record[4]])
+            self.customers_tree.insert('', tk.END, values=[record[0], record[3], record[5]])
 
             # inserting product info
-            record = db.return_product(current_record[self.orders_columns[2]])
+            record = db.return_product(order_data[2])
             for i in self.product_tree.get_children():
                 self.product_tree.delete(i)
             self.product_tree.insert('', tk.END, values=record)
@@ -847,17 +846,16 @@ class OrdersMenu:
             current_record = self.product_tree.set(self.product_tree.selection())
 
             self.id_product_entry.delete(0, tk.END)
-            self.id_product_entry.insert(tk.END, current_record[self.products_columns[0]])
+            self.id_product_entry.insert(tk.END, current_record[PRODUCT_COLUMNS[0]])
 
             # inserting selected customer Orders
-            records = db.return_product_orders(current_record[self.products_columns[0]])
+            records = db.return_product_orders(current_record[PRODUCT_COLUMNS[0]])
             for i in self.order_tree.get_children():
                 self.order_tree.delete(i)
 
             for record in records:
                 self.order_tree.insert('', tk.END, values=[
-                    record[0], record[1], record[2], record[3], record[5], record[6],
-                    record[7], record[8]])
+                    record[0], record[3], record[5], record[6], record[8], record[7]])
 
     def customer_list_manager(self, event):
         """Inserts into list orders of that selected customer."""
@@ -869,17 +867,16 @@ class OrdersMenu:
             current_record = self.customers_tree.set(self.customers_tree.selection())
 
             self.id_customer_entry.delete(0, tk.END)
-            self.id_customer_entry.insert(tk.END, current_record[self.customers_columns[0]])
+            self.id_customer_entry.insert(tk.END, current_record[CUSTOMER_COLUMNS[0]])
 
             # inserting selected customer Orders
-            records = db.return_customer_orders(current_record[self.customers_columns[0]])
+            records = db.return_customer_orders(current_record[CUSTOMER_COLUMNS[0]])
             for i in self.order_tree.get_children():
                 self.order_tree.delete(i)
 
             for record in records:
                 self.order_tree.insert('', tk.END, values=[
-                    record[0], record[1], record[2], record[3], record[5], record[6],
-                    record[7], record[8]])
+                    record[0], record[3], record[5], record[6], record[8], record[7]])
 
     def error_message(self, name):
         """Show's passed message in designated place

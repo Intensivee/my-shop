@@ -7,6 +7,14 @@ import LoginWindow
 import dbmanager as db
 import globals
 
+# Module Constants:
+CUSTOMER_WINDOW_SIZE = "650x600"
+
+PRODUCT_COLUMNS = ('Id', 'Product name', 'Price', 'In stock')
+PRODUCT_COLUMNS_SIZE = (25, 150, 50, 50)
+
+MY_ORDERS_COLUMNS = ('Id', 'Product name', 'Quantity', 'Total price')
+MY_ORDERS_COLUMNS_SIZE = (25, 150, 60, 90)
 
 class CustomerApp:
     """Main customer window."""
@@ -14,7 +22,7 @@ class CustomerApp:
     def __init__(self, master):
         """Initializes main customer window."""
         self.master = master
-        self.master.geometry(globals.CUSTOMER_WINDOW_SIZE)
+        self.master.geometry(CUSTOMER_WINDOW_SIZE)
         self.master.configure(bg=globals.BACKGROUND)
         self.master.title(globals.APP_NAME)
 
@@ -26,12 +34,6 @@ class CustomerApp:
 
         # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
-
-        self.products_columns = ('Id', 'Product name', 'Price', 'In stock')
-        self.products_columns_size = [(25, 25), (150, 150), (50, 50), (50, 50)]
-
-        self.my_orders_columns = ('Id', 'Product name', 'Quantity', 'Total price')
-        self.my_orders_columns_size = [(25, 25), (150, 150), (60, 60), (90, 90)]
 
         self.initialize_main_buttons()
 
@@ -76,12 +78,12 @@ class CustomerApp:
         list_label.grid(row=0, column=0, pady=(10, 0))
 
         # creating treeview for customers
-        self.product_tree = Treeview(self.function_frame, columns=self.products_columns, show='headings', height=10)
+        self.product_tree = Treeview(self.function_frame, columns=PRODUCT_COLUMNS, show='headings', height=10)
         self.product_tree.grid(row=1, column=0, padx=8)
 
-        for cols, width in zip(self.products_columns, self.products_columns_size):
-            self.product_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
-            self.product_tree.heading(cols, text=cols)
+        for column_name, width in zip(PRODUCT_COLUMNS, PRODUCT_COLUMNS_SIZE):
+            self.product_tree.column(column_name, width=width, anchor=tk.CENTER)
+            self.product_tree.heading(column_name, text=column_name)
 
         scrollbar = tk.Scrollbar(self.function_frame, orient=tk.VERTICAL)
         scrollbar.configure(command=self.product_tree.set)
@@ -172,7 +174,7 @@ class CustomerApp:
             if self.product_tree.selection() != ():
                 record = self.product_tree.set(self.product_tree.selection())
                 self.id_product_entry.delete(0, tk.END)
-                self.id_product_entry.insert(tk.END, record[self.products_columns[0]])
+                self.id_product_entry.insert(tk.END, record[PRODUCT_COLUMNS[0]])
 
         except KeyError:
             pass
@@ -181,7 +183,7 @@ class CustomerApp:
         """Show's details of selected order."""
         if self.my_orders_tree.selection() != ():
             record = self.my_orders_tree.set(self.my_orders_tree.selection())
-            record = db.return_order(record[self.products_columns[0]])
+            record = db.return_order(record[PRODUCT_COLUMNS[0]])
 
             if self.function_frame2:
                 self.function_frame2.destroy()
@@ -223,12 +225,12 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}""" \
         list_label.grid(row=0, column=0, pady=(10, 0))
 
         # creating treeview for customers
-        self.my_orders_tree = Treeview(self.function_frame, columns=self.my_orders_columns, show='headings', height=10)
+        self.my_orders_tree = Treeview(self.function_frame, columns=MY_ORDERS_COLUMNS, show='headings', height=10)
         self.my_orders_tree.grid(row=1, column=0)
 
-        for cols, width in zip(self.my_orders_columns, self.my_orders_columns_size):
-            self.my_orders_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
-            self.my_orders_tree.heading(cols, text=cols)
+        for column_name, width in zip(MY_ORDERS_COLUMNS, MY_ORDERS_COLUMNS_SIZE):
+            self.my_orders_tree.column(column_name, width=width, anchor=tk.CENTER)
+            self.my_orders_tree.heading(column_name, text=column_name)
 
         scrollbar = tk.Scrollbar(self.function_frame, orient=tk.VERTICAL)
         scrollbar.configure(command=self.my_orders_tree.set)
@@ -274,7 +276,7 @@ class AccEdit:
         self.master = master
         self.master.configure(bg=globals.BACKGROUND)
         self.master.title(globals.APP_NAME)
-        self.master.geometry(globals.CUSTOMER_WINDOW_SIZE)
+        self.master.geometry(CUSTOMER_WINDOW_SIZE)
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()

@@ -6,6 +6,9 @@ import CustomerWindow
 import dbmanager as db
 import globals
 
+# Module Constants:
+LOGIN_WINDOW_SIZE = "300x200"
+
 
 class LoginWindow:
     """Login and create new acc window."""
@@ -14,15 +17,13 @@ class LoginWindow:
         """Creates login window."""
         self.master = master
         self.master.title(globals.APP_NAME)
-        self.master.geometry(globals.LOGIN_WINDOW_SIZE)
+        self.master.geometry(LOGIN_WINDOW_SIZE)
         self.master.configure(bg=globals.BACKGROUND)
         self.frame = tk.Frame(self.master, bg=globals.BACKGROUND, bd=15)
 
         # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
-        globals.my_id=1
-        self.admin_app()
-        # self.initialize_log_window()
+        self.initialize_log_window()
 
     def initialize_log_window(self):
         """Initializing login window."""
@@ -67,7 +68,7 @@ class LoginWindow:
             if perm == -1 or globals.my_id == -1:
                 self.error_label = tk.Label(self.frame, text="try again..", fg='red', bg=globals.BACKGROUND)
                 self.error_label.grid(row=2, column=1)
-            elif perm == 1:
+            elif perm == globals.ADMIN_PERM:
                 self.admin_app()
             else:
                 self.customer_app()
