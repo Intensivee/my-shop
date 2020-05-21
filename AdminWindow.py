@@ -564,11 +564,22 @@ class OrdersMenu:
         self.entry_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
         self.entry_frame.pack()
         # frame for listbox and scrollbar
-        self.listbox_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
-        self.listbox_frame.pack()
+        self.orders_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
+        self.orders_frame.pack()
+        self.products_customers_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
+        self.products_customers_frame.pack()
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
+
+        self.orders_columns = ('Id_o', "Id_u", "id_p", 'quantity', 'payment', 'send', 'date', 'location')
+        self.orders_columns_size = [(30, 30), (30, 30), (30, 30), (60, 60), (60, 60), (40, 40), (120, 120), (200, 200)]
+
+        self.customers_columns = ('Id', 'Name', 'Email')
+        self.customers_columns_size = [(25, 25), (150, 150), (200, 200)]
+
+        self.products_columns = ('Id', 'Product name', 'Price', 'In stock', 'Description')
+        self.products_columns_size = [(25, 25), (120, 120), (50, 50), (50, 50), (130, 130)]
 
         self.initialize_menu()
 
@@ -585,9 +596,15 @@ class OrdersMenu:
         self.entry_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
         self.entry_frame.pack()
 
-        self.listbox_frame.destroy()
-        self.listbox_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
-        self.listbox_frame.pack()
+        self.orders_frame.destroy()
+        self.orders_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
+        self.orders_frame.pack()
+
+        self.products_customers_frame.destroy()
+        self.products_customers_frame = tk.Frame(self.master, bg=globals.BACKGROUND)
+        self.products_customers_frame.pack()
+
+
 
         if self.error_label:
             self.error_label.destroy()
@@ -647,52 +664,77 @@ class OrdersMenu:
                                 bg=globals.FOREGROUND)
         exit_button.grid(row=4, column=2)
 
-        # Listbox'es
-        # creating listbox for orders
-        list_label = tk.Label(self.listbox_frame, text='list of orders', bg=globals.BACKGROUND)
+        #  =================creating treeview (orders) =======================
+        list_label = tk.Label(self.orders_frame, text='Orders', bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0)
-        scrollbar = tk.Scrollbar(self.listbox_frame)
-        self.order_listbox = tk.Listbox(self.listbox_frame, width=50, height=15, yscrollcommand=scrollbar.set,
-                                        bg=globals.FOREGROUND)
-        self.order_listbox.bind('<<ListboxSelect>>', self.order_list_manager)
-        self.order_listbox.grid(row=1, column=0, padx=8)
 
-        # create listbox for products
-        list_label1 = tk.Label(self.listbox_frame, text='list of products', width=25, bg=globals.BACKGROUND)
-        list_label1.grid(row=0, column=1)
-        scrollbar1 = tk.Scrollbar(self.listbox_frame)
-        self.product_listbox = tk.Listbox(self.listbox_frame, width=40, height=15,
-                                          yscrollcommand=scrollbar1.set, bg=globals.FOREGROUND)
-        self.product_listbox.bind('<<ListboxSelect>>', self.product_list_manager)
-        self.product_listbox.grid(row=1, column=1, padx=8)
+        self.order_tree = Treeview(self.orders_frame, columns=self.orders_columns, show='headings', height=8)
+        self.order_tree.grid(row=1, column=0, padx=100)
 
-        # create listbox for customers
-        list_label2 = tk.Label(self.listbox_frame, text='list of customers', width=25, bg=globals.BACKGROUND)
-        list_label2.grid(row=0, column=2)
-        scrollbar2 = tk.Scrollbar(self.listbox_frame)
-        self.customer_listbox = tk.Listbox(self.listbox_frame, width=40, height=15, yscrollcommand=scrollbar2.set,
-                                           bg=globals.FOREGROUND)
-        self.customer_listbox.bind('<<ListboxSelect>>', self.customer_list_manager)
-        self.customer_listbox.grid(row=1, column=2, padx=8)
+        scrollbar_y = tk.Scrollbar(self.orders_frame, orient=tk.VERTICAL)
+        scrollbar_y.configure(command=self.order_tree.set)
+        scrollbar_x = tk.Scrollbar(self.orders_frame, orient=tk.HORIZONTAL)
+        scrollbar_x.configure(command=self.order_tree.xview())
+        self.order_tree.configure(yscrollcommand=scrollbar_y)
+        self.order_tree.configure(xscrollcommand=scrollbar_x)
+        self.order_tree.bind('<ButtonRelease-1>', self.order_list_manager)
 
-        # adding records from DB to Listbox (orders)
+        for cols, width in zip(self.orders_columns, self.orders_columns_size):
+            self.order_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
+            self.order_tree.heading(cols, text=cols)
+
+        #  =================creating treeview (products) =======================
+        list_label1 = tk.Label(self.products_customers_frame, text='Products', width=25, bg=globals.BACKGROUND)
+        list_label1.grid(row=0, column=0)
+
+        self.product_tree = Treeview(self.products_customers_frame, columns=self.products_columns, show='headings', height=8)
+        self.product_tree.grid(row=1, column=0, padx=10)
+        scrollbar_y = tk.Scrollbar(self.products_customers_frame, orient=tk.VERTICAL)
+        scrollbar_y.configure(command=self.product_tree.set)
+        scrollbar_x = tk.Scrollbar(self.products_customers_frame, orient=tk.HORIZONTAL)
+        scrollbar_x.configure(command=self.order_tree.xview())
+        self.product_tree.configure(yscrollcommand=scrollbar_y)
+        self.product_tree.configure(xscrollcommand=scrollbar_x)
+        self.product_tree.bind('<ButtonRelease-1>', self.product_list_manager)
+
+        for cols, width in zip(self.products_columns, self.products_columns_size):
+            self.product_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
+            self.product_tree.heading(cols, text=cols)
+
+        #  =================creating treeview (customers) =======================
+        list_label2 = tk.Label(self.products_customers_frame, text='Customers', width=25, bg=globals.BACKGROUND)
+        list_label2.grid(row=0, column=1)
+        self.customers_tree = Treeview(self.products_customers_frame, columns=self.customers_columns, show='headings', height=8)
+        self.customers_tree.grid(row=1, column=1)
+
+        scrollbar_y = tk.Scrollbar(self.products_customers_frame, orient=tk.VERTICAL)
+        scrollbar_y.configure(command=self.customers_tree.set)
+        scrollbar_x = tk.Scrollbar(self.products_customers_frame, orient=tk.HORIZONTAL)
+        scrollbar_x.configure(command=self.order_tree.xview())
+        self.customers_tree.configure(yscrollcommand=scrollbar_y)
+        self.customers_tree.configure(xscrollcommand=scrollbar_x)
+        self.customers_tree.bind('<ButtonRelease-1>', self.customer_list_manager)
+
+        for cols, width in zip(self.customers_columns, self.customers_columns_size):
+            self.customers_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
+            self.customers_tree.heading(cols, text=cols)
+
+        # adding records from DB to List (orders)
         records = db.return_orders()
         for record in records:
-            self.order_listbox.insert(tk.END, (
-                str(record[0]), str(record[1]), str(record[2]), str(record[3]), str(record[5]), str(record[6]),
-                str(record[7]), record[8]))
+            self.order_tree.insert('', tk.END, values=[
+                record[0], record[1], record[2], record[3], record[5], record[6],
+                record[7], record[8]])
 
-        # adding records from DB to Listbox (products)
+        # adding records from DB to List (products)
         records = db.return_products()
         for record in records:
-            self.product_listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3])))
+            self.product_tree.insert('', tk.END, values=record)
 
-        # adding records from DB to Listbox (customers)
+        # adding records from DB to List (customers)
         records = db.return_customers()
         for record in records:
-            self.customer_listbox.insert(tk.END, (str(record[0]), record[2], record[4]))
-
-        # adding records from DB to Listbox
+            self.customers_tree.insert('', tk.END, values=[record[0], record[2], record[4]])
 
     def add_order(self):
         """Place new order, if all required entry's are filled."""
@@ -733,19 +775,16 @@ class OrdersMenu:
             self.error_label.destroy()
 
         # checking if anything is selected
-        if not self.order_listbox.curselection():
+        if not self.order_tree.selection():
             self.error_message("please select one from listbox.")
             return
 
         # window asking to delete
         answer = tkinter.messagebox.askquestion('myShop DBMS', 'Delete:\n')
         if answer == 'yes':
-            # finding selected order
-            index = self.order_listbox.curselection()[0]
-            selected_record = self.order_listbox.get(index)
-            db.delete_order(selected_record[0])
+            selected_record = self.order_tree.set(self.order_tree.selection())
+            db.delete_order(selected_record[self.orders_columns[0]])
 
-            # refreshing all
             self.initialize_menu()
 
     def search_order(self):
@@ -753,13 +792,15 @@ class OrdersMenu:
         if self.error_label:
             self.error_label.destroy()
 
-        self.order_listbox.delete(0, tk.END)
         records = db.search_orders(self.id_product_entry.get(), self.id_customer_entry.get(), self.quantity_entry.get(),
                                    self.payment_status_entry.get(), self.location_entry.get())
+
+        for i in self.order_tree.get_children():
+            self.order_tree.delete(i)
         for record in records:
-            self.order_listbox.insert(tk.END, (
-                str(record[0]), str(record[1]), str(record[2]), str(record[3]), str(record[5]), str(record[6]),
-                str(record[7]), record[8]))
+            self.order_tree.insert('', tk.END, values=[
+                record[0], record[1], record[2], record[3], record[5], record[6],
+                record[7], record[8]])
 
     def order_list_manager(self, event):
         """Inserts into lists product and customer of selected order."""
@@ -767,9 +808,8 @@ class OrdersMenu:
             self.error_label.destroy()
 
         # will do sth only if the mouse click was on customer listbox not other listbox'es
-        if self.order_listbox.curselection():
-            search = self.order_listbox.curselection()[0]
-            current_record = self.order_listbox.get(search)
+        if self.order_tree.selection() != ():
+            current_record = self.order_tree.set(self.order_tree.selection())
 
             self.id_customer_entry.delete(0, tk.END)
             self.id_product_entry.delete(0, tk.END)
@@ -778,22 +818,24 @@ class OrdersMenu:
             self.send_status_entry.delete(0, tk.END)
             self.location_entry.delete(0, tk.END)
 
-            self.id_customer_entry.insert(tk.END, current_record[1])
-            self.id_product_entry.insert(tk.END, current_record[2])
-            self.quantity_entry.insert(tk.END, current_record[3])
-            self.payment_status_entry.insert(tk.END, current_record[4])
-            self.send_status_entry.insert(tk.END, current_record[5])
-            self.location_entry.insert(tk.END, current_record[7])
+            self.id_customer_entry.insert(tk.END, current_record[self.orders_columns[1]])
+            self.id_product_entry.insert(tk.END, current_record[self.orders_columns[2]])
+            self.quantity_entry.insert(tk.END, current_record[self.orders_columns[3]])
+            self.payment_status_entry.insert(tk.END, current_record[self.orders_columns[4]])
+            self.send_status_entry.insert(tk.END, current_record[self.orders_columns[5]])
+            self.location_entry.insert(tk.END, current_record[self.orders_columns[7]])
 
             # inserting customer info
-            record = db.return_customer(current_record[1])
-            self.customer_listbox.delete(0, tk.END)
-            self.customer_listbox.insert(tk.END, (str(record[0]), record[3], record[5]))
+            record = db.return_customer(current_record[self.orders_columns[1]])
+            for i in self.customers_tree.get_children():
+                self.customers_tree.delete(i)
+            self.customers_tree.insert('', tk.END, values=[record[0], record[2], record[4]])
 
             # inserting product info
-            record = db.return_product(current_record[2])
-            self.product_listbox.delete(0, tk.END)
-            self.product_listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3])))
+            record = db.return_product(current_record[self.orders_columns[2]])
+            for i in self.product_tree.get_children():
+                self.product_tree.delete(i)
+            self.product_tree.insert('', tk.END, values=record)
 
     def product_list_manager(self, event):
         """Inserts into list orders of that selected product."""
@@ -801,19 +843,21 @@ class OrdersMenu:
             self.error_label.destroy()
 
         # will do sth only if the mouse click was on product listbox not other listbox'es
-        if self.product_listbox.curselection():
-            search = self.product_listbox.curselection()[0]
-            current_record = self.product_listbox.get(search)
+        if self.product_tree.selection() != ():
+            current_record = self.product_tree.set(self.product_tree.selection())
+
             self.id_product_entry.delete(0, tk.END)
-            self.id_product_entry.insert(tk.END, current_record[0])
+            self.id_product_entry.insert(tk.END, current_record[self.products_columns[0]])
 
             # inserting selected customer Orders
-            records = db.return_product_orders(current_record[0])
-            self.order_listbox.delete(0, tk.END)
+            records = db.return_product_orders(current_record[self.products_columns[0]])
+            for i in self.order_tree.get_children():
+                self.order_tree.delete(i)
+
             for record in records:
-                self.order_listbox.insert(tk.END, (
-                    str(record[0]), str(record[1]), str(record[2]), str(record[3]), str(record[5]), str(record[6]),
-                    str(record[7]), record[8]))
+                self.order_tree.insert('', tk.END, values=[
+                    record[0], record[1], record[2], record[3], record[5], record[6],
+                    record[7], record[8]])
 
     def customer_list_manager(self, event):
         """Inserts into list orders of that selected customer."""
@@ -821,19 +865,21 @@ class OrdersMenu:
             self.error_label.destroy()
 
         # will do sth only if the mouse click was on customer listbox not other listbox'es
-        if self.customer_listbox.curselection():
-            search = self.customer_listbox.curselection()[0]
-            current_record = self.customer_listbox.get(search)
+        if self.customers_tree.selection() != ():
+            current_record = self.customers_tree.set(self.customers_tree.selection())
+
             self.id_customer_entry.delete(0, tk.END)
-            self.id_customer_entry.insert(tk.END, current_record[0])
+            self.id_customer_entry.insert(tk.END, current_record[self.customers_columns[0]])
 
             # inserting selected customer Orders
-            records = db.return_customer_orders(current_record[0])
-            self.order_listbox.delete(0, tk.END)
+            records = db.return_customer_orders(current_record[self.customers_columns[0]])
+            for i in self.order_tree.get_children():
+                self.order_tree.delete(i)
+
             for record in records:
-                self.order_listbox.insert(tk.END, (
-                    str(record[0]), str(record[1]), str(record[2]), str(record[3]), str(record[5]), str(record[6]),
-                    str(record[7]), record[8]))
+                self.order_tree.insert('', tk.END, values=[
+                    record[0], record[1], record[2], record[3], record[5], record[6],
+                    record[7], record[8]])
 
     def error_message(self, name):
         """Show's passed message in designated place
@@ -851,12 +897,14 @@ class OrdersMenu:
         """Run's customer window."""
         self.frame.destroy()
         self.entry_frame.destroy()
-        self.listbox_frame.destroy()
+        self.orders_frame.destroy()
+        self.products_customers_frame.destroy()
         CustomersMenu(self.master)
 
     def goto_product_window(self):
         """Run's product window."""
         self.frame.destroy()
         self.entry_frame.destroy()
-        self.listbox_frame.destroy()
+        self.orders_frame.destroy()
+        self.products_customers_frame.destroy()
         ProductsMenu(self.master)

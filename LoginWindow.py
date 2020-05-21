@@ -20,8 +20,9 @@ class LoginWindow:
 
         # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
-
-        self.initialize_log_window()
+        globals.my_id=1
+        self.admin_app()
+        # self.initialize_log_window()
 
     def initialize_log_window(self):
         """Initializing login window."""
