@@ -1,6 +1,7 @@
 """Module contains major customer classes"""
 import tkinter as tk
 import tkinter.messagebox
+from tkinter.ttk import Treeview
 
 import LoginWindow
 import dbmanager as db
@@ -25,6 +26,12 @@ class CustomerApp:
 
         # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
+
+        self.products_columns = ('Id', 'Product name', 'Price', 'In stock')
+        self.products_columns_size = [(25, 25), (150, 150), (50, 50), (50, 50)]
+
+        self.my_orders_columns = ('Id', 'Product name', 'Quantity', 'Total price')
+        self.my_orders_columns_size = [(25, 25), (150, 150), (60, 60), (90, 90)]
 
         self.initialize_main_buttons()
 
@@ -65,19 +72,27 @@ class CustomerApp:
         self.function_frame2 = tk.Frame(self.master, bg=globals.BACKGROUND)
         self.function_frame2.pack()
 
-        # creating listbox for customers
         list_label = tk.Label(self.function_frame, text='list of products', width=100, bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0, pady=(10, 0))
-        scrollbar = tk.Scrollbar(self.function_frame)
-        self.products_listbox = tk.Listbox(self.function_frame, width=60, height=15,
-                                           yscrollcommand=scrollbar.set, bg=globals.FOREGROUND)
-        self.products_listbox.bind('<<ListboxSelect>>', self.product_selection)
-        self.products_listbox.grid(row=1, column=0, padx=8)
+
+        # creating treeview for customers
+        self.product_tree = Treeview(self.function_frame, columns=self.products_columns, show='headings', height=10)
+        self.product_tree.grid(row=1, column=0, padx=8)
+
+        for cols, width in zip(self.products_columns, self.products_columns_size):
+            self.product_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
+            self.product_tree.heading(cols, text=cols)
+
+
+        scrollbar = tk.Scrollbar(self.function_frame, orient=tk.VERTICAL)
+        scrollbar.configure(command=self.product_tree.set)
+        self.product_tree.configure(yscrollcommand=scrollbar)
+        self.product_tree.bind('<ButtonRelease-1>', self.product_selection)
 
         # adding records from DB to Listbox
         records = db.return_products()
         for record in records:
-            self.products_listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3])))
+            self.product_tree.insert('', tk.END, values=[record[0], record[1], record[2], record[3]])
 
         # crating labels
         id_product_label = tk.Label(self.function_frame2, text='Product ID:', bg=globals.BACKGROUND)
@@ -154,20 +169,20 @@ class CustomerApp:
 
     def product_selection(self, event):
         """Add's id of selected product to designated entry."""
-        # will do sth only if the mouse click was on customer listbox
-        if self.products_listbox.curselection():
-            search = self.products_listbox.curselection()[0]
-            current_record = self.products_listbox.get(search)
+        try:
+            if self.product_tree.selection() != ():
+                record = self.product_tree.set(self.product_tree.selection())
+                self.id_product_entry.delete(0, tk.END)
+                self.id_product_entry.insert(tk.END, record[self.products_columns[0]])
 
-            self.id_product_entry.delete(0, tk.END)
-            self.id_product_entry.insert(tk.END, current_record[0])
+        except KeyError:
+            pass
 
     def order_selection(self, event):
         """Show's details of selected order."""
-        if self.my_orders_listbox.curselection():
-            search = self.my_orders_listbox.curselection()[0]
-            current_record = self.my_orders_listbox.get(search)
-            record = db.return_order(current_record[0])
+        if self.my_orders_tree.selection() != ():
+            record = self.my_orders_tree.set(self.my_orders_tree.selection())
+            record = db.return_order(record[self.products_columns[0]])
 
             if self.function_frame2:
                 self.function_frame2.destroy()
@@ -175,10 +190,10 @@ class CustomerApp:
             self.function_frame2 = tk.Frame(self.master, bg=globals.BACKGROUND)
             self.function_frame2.pack(side=tk.TOP)
 
-            # creating Message instead of Label (long)
+            # creating Message instead of Label (might be long)
             desc = """quantity: \t{}\ntotal_price: \t{}\npayment_status: \t{}
 send_status: \t{}\noder_date: \t{}\nlocation: \t{}""" \
-                .format(str(record[3]), str(record[4]), str(record[5]), str(record[6]), str(record[7]), str(record[8]))
+                .format(record[3], record[4], record[5], record[6], record[7], record[8])
 
             self.error_label = tk.Message(self.function_frame2, text="\n{}".format(desc),
                                           bg=globals.BACKGROUND,
@@ -207,16 +222,24 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}""" \
         # creating listbox for customers
         list_label = tk.Label(self.function_frame, text='my orders:', width=100, bg=globals.BACKGROUND)
         list_label.grid(row=0, column=0, pady=(10, 0))
-        scrollbar = tk.Scrollbar(self.function_frame)
-        self.my_orders_listbox = tk.Listbox(self.function_frame, width=60, height=15, yscrollcommand=scrollbar.set,
-                                            bg=globals.FOREGROUND)
-        self.my_orders_listbox.bind('<<ListboxSelect>>', self.order_selection)
-        self.my_orders_listbox.grid(row=1, column=0, padx=8)
 
-        # adding records from DB to Listbox
+        # creating treeview for customers
+        self.my_orders_tree = Treeview(self.function_frame, columns=self.my_orders_columns, show='headings', height=10)
+        self.my_orders_tree.grid(row=1, column=0)
+
+        for cols, width in zip(self.my_orders_columns, self.my_orders_columns_size):
+            self.my_orders_tree.column(cols, minwidth=width[0], width=width[1], anchor=tk.CENTER)
+            self.my_orders_tree.heading(cols, text=cols)
+
+        scrollbar = tk.Scrollbar(self.function_frame, orient=tk.VERTICAL)
+        scrollbar.configure(command=self.my_orders_tree.set)
+        self.my_orders_tree.configure(yscrollcommand=scrollbar)
+        self.my_orders_tree.bind('<ButtonRelease-1>', self.order_selection)
+
+        # adding records from DB to treeview
         records = db.orders_product_info(globals.my_id)
         for record in records:
-            self.my_orders_listbox.insert(tk.END, (str(record[0]), record[1], str(record[2]), str(record[3])))
+            self.my_orders_tree.insert('', tk.END, values=[record[0], record[1], record[2], record[3]])
 
     def error_message(self, name):
         """Show's passed message in designated place
