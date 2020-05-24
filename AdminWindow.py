@@ -1,5 +1,4 @@
 """Module contains major admin classes"""
-import sqlite3
 import tkinter as tk
 import tkinter.messagebox
 from tkinter.ttk import Treeview
