@@ -1,4 +1,4 @@
-"""Main module, that runs the app."""
+"""Main module that runs the app."""
 import tkinter as tk
 
 import LoginWindow

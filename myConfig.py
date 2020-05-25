@@ -7,6 +7,7 @@ ADMIN_PERM = 1
 
 BACKGROUND = 'AntiqueWhite3'
 FOREGROUND = 'AntiqueWhite1'
+ERROR_FOREGROUND = 'red'
 
 
 

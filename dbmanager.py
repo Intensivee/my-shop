@@ -188,7 +188,7 @@ def add_product(name, price, stock, desc):
 def search_products(name='', price='', stock='', desc=''):
     """Returns products that meet at least 1 of passed args."""
     with conn:
-        if desc != '':
+        if desc:
             c.execute("SELECT * FROM Products WHERE product_name=? OR product_price=? OR in_stock=? OR description=?",
                       (name, price, stock, desc,))
         else:
