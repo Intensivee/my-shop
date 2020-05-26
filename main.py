@@ -7,7 +7,8 @@ import LoginWindow
 def main():
     """Create and maintains the window."""
     root = tk.Tk()
-    LoginWindow.LoginWindow(root)
+    application = LoginWindow.LoginWindow(root)
+    application.initialize_login_window()
     root.mainloop()
 
 

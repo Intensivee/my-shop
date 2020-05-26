@@ -23,7 +23,6 @@ class LoginWindow:
 
         # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
-        self.initialize_login_window()
 
     def initialize_login_window(self):
         """Initializing login window."""
@@ -145,14 +144,17 @@ class LoginWindow:
                 db.add_customer(self.login_entry.get(), self.password_entry.get(), self.name_entry.get(),
                                 self.phone_entry.get(), self.email_entry.get())
                 self.frame.destroy()
-                LoginWindow(self.master)
+                application = LoginWindow(self.master)
+                application.initialize_login_window()
 
     def admin_app(self):
         """Initializing Admin window."""
         self.frame.destroy()
-        AdminWindow.CustomersMenu(self.master)
+        application = AdminWindow.CustomersMenu(self.master)
+        application.initialize_menu()
 
     def customer_app(self):
         """Initializing Customer window."""
         self.frame.destroy()
-        CustomerWindow.CustomerApp(self.master)
+        application = CustomerWindow.CustomerApp(self.master)
+        application.initialize_main_buttons()

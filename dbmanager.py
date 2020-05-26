@@ -8,7 +8,7 @@ c = conn.cursor()
 
 def initialize():
     """Create tables if not existing."""
-    c.execute(("""
+    c.execute("""
     CREATE TABLE IF NOT EXISTS Customers(
     id_customer   INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     login         TEXT    NOT NULL,
@@ -17,7 +17,7 @@ def initialize():
     phone         TEXT    DEFAULT (0) NOT NULL,
     email         TEXT    NOT NULL,
     perm          INT     NOT NULL DEFAULT (0) 
-    )"""))
+    )""")
 
     c.execute("""
     CREATE TABLE IF NOT EXISTS Orders(
@@ -51,11 +51,11 @@ def initialize():
 
 def is_customer_exists(login, email):
     """Returns false if not exist, or login/email depending on which exists in db."""
-    c.execute("SELECT * from Customers WHERE login=?", (login,))
+    c.execute("SELECT id_customer, login, password, customer_name, phone, email, perm from Customers WHERE login=?", (login,))
     if c.fetchone() is not None:
         return "login"
 
-    c.execute("SELECT * from Customers WHERE email=?", (email,))
+    c.execute("SELECT id_customer, login, password, customer_name, phone, email, perm from Customers WHERE email=?", (email,))
     if c.fetchone() is not None:
         return "mail"
     return False
@@ -78,26 +78,22 @@ def add_customer(login, password, name, phone, email):
 def return_customers():
     """Returns list of all customers in DB."""
     with conn:
-        c.execute("SELECT id_customer,login,customer_name,phone,email,perm FROM Customers")
+        c.execute("SELECT id_customer, login, customer_name, phone, email, perm FROM Customers")
         rows = c.fetchall()
         return rows
 
 
 def return_customer(customer_id):
-    """Returns single customer or False."""
+    """Returns single customer or None if not existing."""
     with conn:
-        c.execute("SELECT * FROM Customers WHERE id_customer=?", (customer_id,))
-        row = c.fetchone()
-        if row is None:
-            return False
-        return row
-
+        c.execute("SELECT id_customer, login, password, customer_name, phone, email, perm FROM Customers WHERE id_customer=?", (customer_id,))
+        return c.fetchone()
 
 def search_customer(login="", name="", phone="", email="", perm=""):
     """Returns customers that meet at least 1 of passed args."""
     with conn:
         c.execute(
-            "SELECT id_customer,login,customer_name,phone,email,perm FROM Customers WHERE login=? OR customer_name=? OR phone=? OR email=? or perm=?",
+            "SELECT id_customer, login, customer_name, phone, email, perm FROM Customers WHERE login=? OR customer_name=? OR phone=? OR email=? or perm=?",
             (login, name, phone, email, perm))
         rows = c.fetchall()
         return rows
@@ -107,17 +103,16 @@ def delete_customer(customer_id, check_if_exists=1):
     """Delete or check if customer exists.
 
     when 0 passed it delete's the customer.
-    when 1 passed it returns customer or False depending on if it exists."""
+    when 1 passed it returns customer or None if not existing."""
     with conn:
         if check_if_exists == 1:
             c.execute("SELECT login, customer_name, email FROM Customers WHERE id_customer=?", (customer_id,))
-            records = c.fetchall()
-            if records is None:
-                return False
-            return records
+            return c.fetchone()
 
-        c.execute("DELETE FROM Customers WHERE id_customer=?", (customer_id,))
-        return True
+        if check_if_exists == 0:
+            c.execute("DELETE FROM Customers WHERE id_customer=?", (customer_id,))
+            return True
+        return False
 
 
 def update_customer(customer_id, login, name, email, phone="", perm=0):
@@ -165,7 +160,7 @@ def is_product_id_exists(product_id) -> bool:
 def return_product(product_id):
     """Returns product by given id."""
     with conn:
-        c.execute("SELECT * FROM Products WHERE id_product=?", (product_id,))
+        c.execute("SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE id_product=?", (product_id,))
         return c.fetchone()
 
 
@@ -189,10 +184,10 @@ def search_products(name='', price='', stock='', desc=''):
     """Returns products that meet at least 1 of passed args."""
     with conn:
         if desc:
-            c.execute("SELECT * FROM Products WHERE product_name=? OR product_price=? OR in_stock=? OR description=?",
+            c.execute("SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE product_name=? OR product_price=? OR in_stock=? OR description=?",
                       (name, price, stock, desc,))
         else:
-            c.execute("SELECT * FROM Products WHERE product_name=? OR product_price=? OR in_stock=?",
+            c.execute("SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE product_name=? OR product_price=? OR in_stock=?",
                       (name, price, stock,))
         records = c.fetchall()
         return records
@@ -206,12 +201,12 @@ def delete_product(product_id, check_if_exists=1):
     when 1 passed it returns product or False depending on if it exists."""
     with conn:
         if check_if_exists == 1:
-            c.execute("SELECT * FROM Products WHERE id_product=?", (product_id,))
-            records = c.fetchall()
-            if records is None:
-                return False
-            return records
-        c.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
+            c.execute("SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE id_product=?", (product_id,))
+            return c.fetchone()
+
+        if check_if_exists == 0:
+            c.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
+            return True
         return True
 
 
@@ -225,7 +220,7 @@ def update_product(product_id, name, price, stock, desc):
 def return_orders():
     """Returns list of all Orders in DB."""
     with conn:
-        c.execute("SELECT * FROM Orders")
+        c.execute("SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders")
     records = c.fetchall()
     return records
 
@@ -233,14 +228,14 @@ def return_orders():
 def return_product_orders(product_id):
     """Returns list of Orders that refers to passed product id."""
     with conn:
-        c.execute("SELECT * FROM Orders Where id_product=?", (product_id,))
+        c.execute("SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders Where id_product=?", (product_id,))
         return c.fetchall()
 
 
 def return_customer_orders(customer_id):
     """Returns list of Orders that refers to passed customer id."""
     with conn:
-        c.execute("SELECT * FROM Orders Where id_customer=?", (customer_id,))
+        c.execute("SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders Where id_customer=?", (customer_id,))
         return c.fetchall()
 
 
@@ -284,7 +279,7 @@ def delete_order(order_id):
 def search_orders(product_id='', customer_id='', quantity='', pay='', send='', location=''):
     """Returns orders that meet at least 1 of passed args."""
     with conn:
-        c.execute("""SELECT * FROM Orders WHERE id_customer=? OR id_product=? OR quantity=?
+        c.execute("""SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders WHERE id_customer=? OR id_product=? OR quantity=?
                  OR payment_status=? OR send_status=? OR location=?""",
                   (product_id, customer_id, quantity, pay, send, location))
     return c.fetchall()
@@ -293,5 +288,5 @@ def search_orders(product_id='', customer_id='', quantity='', pay='', send='', l
 def return_order(order_id):
     """Return order by given id."""
     with conn:
-        c.execute("SELECT * FROM Orders WHERE id_order=?", (order_id,))
+        c.execute("SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders WHERE id_order=?", (order_id,))
     return c.fetchone()

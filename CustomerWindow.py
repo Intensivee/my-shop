@@ -35,8 +35,6 @@ class CustomerApp:
         # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
 
-        self.initialize_main_buttons()
-
     def initialize_main_buttons(self):
         """Initializes main buttons.
 
@@ -171,7 +169,7 @@ class CustomerApp:
     def product_selection(self, event):
         """Add's id of selected product to designated entry."""
         try:
-            if self.product_tree.selection() != ():
+            if self.product_tree.selection():
                 record = self.product_tree.set(self.product_tree.selection())
                 self.id_product_entry.delete(0, tk.END)
                 self.id_product_entry.insert(tk.END, record[PRODUCT_COLUMNS[0]])
@@ -181,7 +179,7 @@ class CustomerApp:
 
     def order_selection(self, event):
         """Show's details of selected order."""
-        if self.my_orders_tree.selection() != ():
+        if self.my_orders_tree.selection():
             record = self.my_orders_tree.set(self.my_orders_tree.selection())
             record = db.return_order(record[PRODUCT_COLUMNS[0]])
 
@@ -265,7 +263,8 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
             self.function_frame2.destroy()
         if self.function_frame3:
             self.function_frame3.destroy()
-        LoginWindow.LoginWindow(self.master)
+        application = LoginWindow.LoginWindow(self.master)
+        application.initialize_login_window()
 
 
 class AccountEdit:
@@ -374,4 +373,5 @@ class AccountEdit:
     def exit(self):
         """Run's back main customer window."""
         self.frame.destroy()
-        CustomerApp(self.master)
+        application = CustomerApp(self.master)
+        application.initialize_main_buttons()

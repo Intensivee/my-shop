@@ -5,6 +5,7 @@ from tkinter.ttk import Treeview
 
 import dbmanager as db
 import myConfig
+import LoginWindow
 
 # Module Constants:
 ADMIN_WINDOW_SIZE = "1000x640"
@@ -44,8 +45,6 @@ class CustomersMenu:
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
-
-        self.initialize_menu()
 
     def initialize_menu(self):
         """Initializes customers window.
@@ -112,9 +111,13 @@ class CustomersMenu:
         clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_customer_entrys, width=20,
                                  bg=myConfig.FOREGROUND)
         clear_button.grid(row=3, column=2)
-        exit_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_customer, width=20,
+        delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_customer, width=20,
                                 bg=myConfig.FOREGROUND)
-        exit_button.grid(row=4, column=2)
+        delete_button.grid(row=4, column=2)
+
+        exit_button = tk.Button(self.entry_frame, text='log off', command=self.exit_admin_window, width=20,
+                                bg=myConfig.FOREGROUND)
+        exit_button.grid(row=5, column=2)
 
         # creating listbox for customers
         self.listbox_frame = tk.Frame(self.master, bg=myConfig.BACKGROUND)
@@ -241,13 +244,14 @@ class CustomersMenu:
         if self.error_label:
             self.error_label.destroy()
 
-        record = self.customers_tree.set(self.customers_tree.selection())
+        if self.customers_tree.selection():
+            record = self.customers_tree.set(self.customers_tree.selection())
 
-        self.login_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[1]])
-        self.name_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[2]])
-        self.phone_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[3]])
-        self.email_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[4]])
-        self.perm_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[5]])
+            self.login_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[1]])
+            self.name_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[2]])
+            self.phone_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[3]])
+            self.email_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[4]])
+            self.perm_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[5]])
 
     def error_message(self, name):
         """Show's passed message in designated place
@@ -266,14 +270,24 @@ class CustomersMenu:
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
-        OrdersMenu(self.master)
+        application = OrdersMenu(self.master)
+        application.initialize_menu()
 
     def go_to_product_window(self):
         """Run's products window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
-        ProductsMenu(self.master)
+        application = ProductsMenu(self.master)
+        application.initialize_menu()
+
+    def exit_admin_window(self):
+        self.frame.destroy()
+        self.entry_frame.destroy()
+        self.listbox_frame.destroy()
+        application = LoginWindow.LoginWindow(self.master)
+        application.initialize_login_window()
+
 
 
 class ProductsMenu:
@@ -298,8 +312,6 @@ class ProductsMenu:
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
-
-        self.initialize_menu()
 
     def initialize_menu(self):
         """Initializes products window.
@@ -368,6 +380,10 @@ class ProductsMenu:
         delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_product, width=20,
                                   bg=myConfig.FOREGROUND)
         delete_button.grid(row=4, column=2)
+
+        exit_button = tk.Button(self.entry_frame, text='log off', command=self.exit_admin_window, width=20,
+                                bg=myConfig.FOREGROUND)
+        exit_button.grid(row=5, column=2)
 
 
         list_label = tk.Label(self.listbox_frame, text='list of products', width=100, bg=myConfig.BACKGROUND)
@@ -516,7 +532,7 @@ class ProductsMenu:
         if self.error_label:
             self.error_label.destroy()
         try:
-            if self.product_tree.selection() != ():
+            if self.product_tree.selection():
                 record = self.product_tree.set(self.product_tree.selection())
                 self.product_name_entry.insert(tk.END, record[PRODUCT_COLUMNS[1]])
                 self.product_price_entry.insert(tk.END, record[PRODUCT_COLUMNS[2]])
@@ -543,14 +559,23 @@ class ProductsMenu:
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
-        OrdersMenu(self.master)
+        application = OrdersMenu(self.master)
+        application.initialize_menu()
 
     def go_to_customer_window(self):
         """Run's customer window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
-        CustomersMenu(self.master)
+        application = CustomersMenu(self.master)
+        application.initialize_menu()
+
+    def exit_admin_window(self):
+        self.frame.destroy()
+        self.entry_frame.destroy()
+        self.listbox_frame.destroy()
+        application = LoginWindow.LoginWindow(self.master)
+        application.initialize_login_window()
 
 
 class OrdersMenu:
@@ -577,8 +602,6 @@ class OrdersMenu:
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
         self.error_label = tk.Label()
-
-        self.initialize_menu()
 
     def initialize_menu(self):
         """Initializes orders window.
@@ -611,7 +634,7 @@ class OrdersMenu:
                                     bg=myConfig.FOREGROUND)
         customer_button.grid(row=0, column=0, pady=10)
         order_button = tk.Button(self.frame, text='Order', command=self.initialize_menu, width=30,
-                                   bg=myConfig.FOREGROUND)
+                                 bg=myConfig.FOREGROUND)
         order_button.grid(row=0, column=1, )
         product_button = tk.Button(self.frame, text='Product', command=self.go_to_product_window, width=30,
                                    bg=myConfig.FOREGROUND)
@@ -657,7 +680,7 @@ class OrdersMenu:
         delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_order, width=20,
                                   bg=myConfig.FOREGROUND)
         delete_button.grid(row=3, column=2)
-        exit_button = tk.Button(self.entry_frame, text='Exit', command=self.master.destroy, width=20,
+        exit_button = tk.Button(self.entry_frame, text='log off', command=self.exit_admin_window, width=20,
                                 bg=myConfig.FOREGROUND)
         exit_button.grid(row=4, column=2)
 
@@ -805,7 +828,7 @@ class OrdersMenu:
             self.error_label.destroy()
 
         # will do sth only if the mouse click was on customer listbox not other listbox'es
-        if self.order_tree.selection() != ():
+        if self.order_tree.selection():
             current_record = self.order_tree.set(self.order_tree.selection())
 
             self.id_customer_entry.delete(0, tk.END)
@@ -842,7 +865,7 @@ class OrdersMenu:
             self.error_label.destroy()
 
         # will do sth only if the mouse click was on product listbox not other listbox'es
-        if self.product_tree.selection() != ():
+        if self.product_tree.selection():
             current_record = self.product_tree.set(self.product_tree.selection())
 
             self.id_product_entry.delete(0, tk.END)
@@ -863,7 +886,7 @@ class OrdersMenu:
             self.error_label.destroy()
 
         # will do sth only if the mouse click was on customer listbox not other listbox'es
-        if self.customers_tree.selection() != ():
+        if self.customers_tree.selection():
             current_record = self.customers_tree.set(self.customers_tree.selection())
 
             self.id_customer_entry.delete(0, tk.END)
@@ -896,7 +919,8 @@ class OrdersMenu:
         self.entry_frame.destroy()
         self.orders_frame.destroy()
         self.products_customers_frame.destroy()
-        CustomersMenu(self.master)
+        application = CustomersMenu(self.master)
+        application.initialize_menu()
 
     def go_to_product_window(self):
         """Run's product window."""
@@ -904,4 +928,13 @@ class OrdersMenu:
         self.entry_frame.destroy()
         self.orders_frame.destroy()
         self.products_customers_frame.destroy()
-        ProductsMenu(self.master)
+        application = ProductsMenu(self.master)
+        application.initialize_menu()
+
+    def exit_admin_window(self):
+        self.frame.destroy()
+        self.entry_frame.destroy()
+        self.orders_frame.destroy()
+        self.products_customers_frame.destroy()
+        application = LoginWindow.LoginWindow(self.master)
+        application.initialize_login_window()
