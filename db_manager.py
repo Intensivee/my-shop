@@ -51,28 +51,27 @@ def initialize():
 def is_customer_exists(login, email):
     """Returns false if not exist, or login/email depending on which exists in db."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id_customer, login, password, customer_name, phone, email, perm from Customers WHERE login=?",
+            (login,))
+        if cursor.fetchone() is not None:
+            return "login"
 
-            cursor.execute(
-                "SELECT id_customer, login, password, customer_name, phone, email, perm from Customers WHERE login=?",
-                (login,))
-            if cursor.fetchone() is not None:
-                return "login"
-
-            cursor.execute(
-                "SELECT id_customer, login, password, customer_name, phone, email, perm from Customers WHERE email=?",
-                (email,))
-            if cursor.fetchone() is not None:
-                return "mail"
-            return False
+        cursor.execute(
+            "SELECT id_customer, login, password, customer_name, phone, email, perm from Customers WHERE email=?",
+            (email,))
+        if cursor.fetchone() is not None:
+            return "mail"
+        return False
 
 
 def is_customer_id_exist(customer_id) -> bool:
     """Returns True or False depending if customer exists."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT exists(SELECT 1 FROM Customers WHERE id_customer =?)", (customer_id,))
-            return cursor.fetchone()[0] == 1
+        cursor = connection.cursor()
+        cursor.execute("SELECT exists(SELECT 1 FROM Customers WHERE id_customer =?)", (customer_id,))
+        return cursor.fetchone()[0] == 1
 
 
 def add_customer(login, password, name, phone, email):
@@ -85,30 +84,30 @@ def add_customer(login, password, name, phone, email):
 def return_customers():
     """Returns list of all customers in DB."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id_customer, login, customer_name, phone, email, perm FROM Customers")
-            return cursor.fetchall()
+        cursor = connection.cursor()
+        cursor.execute("SELECT id_customer, login, customer_name, phone, email, perm FROM Customers")
+        return cursor.fetchall()
 
 
 def return_customer(customer_id):
     """Returns single customer or None if not existing."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT id_customer, login, password, customer_name, phone, email, perm FROM Customers WHERE id_customer=?",
-                (customer_id,))
-            return cursor.fetchone()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id_customer, login, password, customer_name, phone, email, perm FROM Customers WHERE id_customer=?",
+            (customer_id,))
+        return cursor.fetchone()
 
 
 def search_customer(login="", name="", phone="", email="", perm=""):
     """Returns customers that meet at least 1 of passed args."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT id_customer, login, customer_name, phone, email, perm FROM Customers WHERE login=? OR customer_name=? OR phone=? OR email=? or perm=?",
-                (login, name, phone, email, perm))
-            rows = cursor.fetchall()
-            return rows
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id_customer, login, customer_name, phone, email, perm FROM Customers WHERE login=? OR customer_name=? OR phone=? OR email=? or perm=?",
+            (login, name, phone, email, perm))
+        rows = cursor.fetchall()
+        return rows
 
 
 def delete_customer(customer_id, check_if_exists=1):
@@ -117,15 +116,15 @@ def delete_customer(customer_id, check_if_exists=1):
     when 0 passed it delete's the customer.
     when 1 passed it returns customer or None if not existing."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            if check_if_exists == 1:
-                cursor.execute("SELECT login, customer_name, email FROM Customers WHERE id_customer=?", (customer_id,))
-                return cursor.fetchone()
+        cursor = connection.cursor()
+        if check_if_exists == 1:
+            cursor.execute("SELECT login, customer_name, email FROM Customers WHERE id_customer=?", (customer_id,))
+            return cursor.fetchone()
 
-            if check_if_exists == 0:
-                connection.execute("DELETE FROM Customers WHERE id_customer=?", (customer_id,))
-                return True
-            return False
+        if check_if_exists == 0:
+            connection.execute("DELETE FROM Customers WHERE id_customer=?", (customer_id,))
+            return True
+        return False
 
 
 def update_customer(customer_id, login, name, email, phone="", perm=0):
@@ -146,12 +145,12 @@ def edit_customer(customer_id, password, name, email, phone):
 def customer_perm(login, password):
     """Returns Customer info tuple(id, perm) or (false, -1) if not exists."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id_customer,perm from Customers WHERE login=? and password=?", (login, password))
-            record = cursor.fetchone()
-            if record is None:
-                return False, -1
-            return record[0], record[1]
+        cursor = connection.cursor()
+        cursor.execute("SELECT id_customer,perm from Customers WHERE login=? and password=?", (login, password))
+        record = cursor.fetchone()
+        if record is None:
+            return False, -1
+        return record[0], record[1]
 
 
 # products ---------------------------------------------------------------
@@ -161,36 +160,36 @@ def customer_perm(login, password):
 def is_product_exists(product_name) -> bool:
     """Returns True or False depending if product with given name exists."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT exists(SELECT 1 FROM Products WHERE product_name = ?)", (product_name,))
-            return cursor.fetchone()[0] == 1
+        cursor = connection.cursor()
+        cursor.execute("SELECT exists(SELECT 1 FROM Products WHERE product_name = ?)", (product_name,))
+        return cursor.fetchone()[0] == 1
 
 
 def is_product_id_exists(product_id) -> bool:
     """Returns True or False depending if product with given id exists."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT exists(SELECT 1 FROM Products WHERE id_product =?)", (product_id,))
-            return cursor.fetchone()[0] == 1
+        cursor = connection.cursor()
+        cursor.execute("SELECT exists(SELECT 1 FROM Products WHERE id_product =?)", (product_id,))
+        return cursor.fetchone()[0] == 1
 
 
 def return_product(product_id):
     """Returns product by given id."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE id_product=?",
-                (product_id,))
-            return cursor.fetchone()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE id_product=?",
+            (product_id,))
+        return cursor.fetchone()
 
 
 def return_products():
     """Returns list of all products."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id_product, product_name, product_price, in_stock, description FROM Products")
-            records = cursor.fetchall()
-            return records
+        cursor = connection.cursor()
+        cursor.execute("SELECT id_product, product_name, product_price, in_stock, description FROM Products")
+        records = cursor.fetchall()
+        return records
 
 
 def add_product(name, price, stock, desc):
@@ -203,17 +202,17 @@ def add_product(name, price, stock, desc):
 def search_products(name='', price='', stock='', desc=''):
     """Returns products that meet at least 1 of passed args."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            if desc:
-                cursor.execute(
-                    "SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE product_name=? OR product_price=? OR in_stock=? OR description=?",
-                    (name, price, stock, desc,))
-            else:
-                cursor.execute(
-                    "SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE product_name=? OR product_price=? OR in_stock=?",
-                    (name, price, stock,))
-            records = cursor.fetchall()
-            return records
+        cursor = connection.cursor()
+        if desc:
+            cursor.execute(
+                "SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE product_name=? OR product_price=? OR in_stock=? OR description=?",
+                (name, price, stock, desc,))
+        else:
+            cursor.execute(
+                "SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE product_name=? OR product_price=? OR in_stock=?",
+                (name, price, stock,))
+        records = cursor.fetchall()
+        return records
 
 
 # if sec value is not passed it only check and return the value if it exists
@@ -223,17 +222,17 @@ def delete_product(product_id, check_if_exists=1):
     when 0 passed it delete's the product.
     when 1 passed it returns product or False depending on if it exists."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            if check_if_exists == 1:
-                cursor.execute(
-                    "SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE id_product=?",
-                    (product_id,))
-                return cursor.fetchone()
+        cursor = connection.cursor()
+        if check_if_exists == 1:
+            cursor.execute(
+                "SELECT id_product, product_name, product_price, in_stock, description FROM Products WHERE id_product=?",
+                (product_id,))
+            return cursor.fetchone()
 
-            if check_if_exists == 0:
-                connection.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
-                return True
+        if check_if_exists == 0:
+            connection.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
             return True
+        return True
 
 
 def update_product(product_id, name, price, stock, desc):
@@ -247,31 +246,31 @@ def update_product(product_id, name, price, stock, desc):
 def return_orders():
     """Returns list of all Orders in DB."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders")
-            records = cursor.fetchall()
-            return records
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders")
+        records = cursor.fetchall()
+        return records
 
 
 def return_product_orders(product_id):
     """Returns list of Orders that refers to passed product id."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders Where id_product=?",
-                (product_id,))
-            return cursor.fetchall()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders Where id_product=?",
+            (product_id,))
+        return cursor.fetchall()
 
 
 def return_customer_orders(customer_id):
     """Returns list of Orders that refers to passed customer id."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders Where id_customer=?",
-                (customer_id,))
-            return cursor.fetchall()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders Where id_customer=?",
+            (customer_id,))
+        return cursor.fetchall()
 
 
 def add_order(customer_id, product_id, quantity, location, payment_status=0, send_status=0):
@@ -298,12 +297,12 @@ def orders_product_info(customer_id):
 
     Returns order id, product name, quantity, total price of order."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """SELECT o.id_order,p.product_name,o.quantity,o.total_price
-                FROM Orders AS o NATURAL JOIN Products AS p WHERE o.id_customer=?""",
-                (customer_id,))
-            return cursor.fetchall()
+        cursor = connection.cursor()
+        cursor.execute(
+            """SELECT o.id_order,p.product_name,o.quantity,o.total_price
+            FROM Orders AS o NATURAL JOIN Products AS p WHERE o.id_customer=?""",
+            (customer_id,))
+        return cursor.fetchall()
 
 
 def delete_order(order_id):
@@ -315,18 +314,18 @@ def delete_order(order_id):
 def search_orders(product_id='', customer_id='', quantity='', pay='', send='', location=''):
     """Returns orders that meet at least 1 of passed args."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("""SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders WHERE id_customer=? OR id_product=? OR quantity=?
-                     OR payment_status=? OR send_status=? OR location=?""",
-                           (product_id, customer_id, quantity, pay, send, location))
-            return cursor.fetchall()
+        cursor = connection.cursor()
+        cursor.execute("""SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders WHERE id_customer=? OR id_product=? OR quantity=?
+                 OR payment_status=? OR send_status=? OR location=?""",
+                       (product_id, customer_id, quantity, pay, send, location))
+        return cursor.fetchall()
 
 
 def return_order(order_id):
     """Return order by given id."""
     with MY_CONNECTION as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders WHERE id_order=?",
-                (order_id,))
-            return cursor.fetchone()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id_order, id_customer, id_product, quantity, total_price, payment_status, send_status, order_date, location FROM Orders WHERE id_order=?",
+            (order_id,))
+        return cursor.fetchone()
