@@ -10,7 +10,6 @@ FOREGROUND = 'AntiqueWhite1'
 ERROR_FOREGROUND = 'red'
 
 
-
 def is_float(value):
     """check whether it's float but also not throw error when it's string"""
     try:

@@ -1,13 +1,13 @@
 """Main module that runs the app."""
 import tkinter as tk
 
-import LoginWindow
+import login_window
 
 
 def main():
     """Create and maintains the window."""
     root = tk.Tk()
-    application = LoginWindow.LoginWindow(root)
+    application = login_window.LoginWindow(root)
     application.initialize_login_window()
     root.mainloop()
 
