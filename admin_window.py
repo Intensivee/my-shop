@@ -5,7 +5,7 @@ from tkinter.ttk import Treeview
 
 import login_window
 import db_manager as db
-import my_config
+import config
 
 # Module Constants:
 ADMIN_WINDOW_SIZE = "1000x640"
@@ -30,17 +30,17 @@ class CustomersMenu:
         """Creates customers window."""
         self.master = master
         self.master.geometry(ADMIN_WINDOW_SIZE)
-        self.master.configure(bg=my_config.BACKGROUND)
-        self.master.title(my_config.APP_NAME)
+        self.master.configure(bg=config.BACKGROUND)
+        self.master.title(config.APP_NAME)
 
         # frame for main muttons (customer,order,product)
-        self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.frame.pack()
         # frame for all entry's, function buttons and labels
-        self.entry_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.entry_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.entry_frame.pack()
         # frame for listbox and scrollbar
-        self.listbox_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.listbox_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.listbox_frame.pack()
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
@@ -52,15 +52,15 @@ class CustomersMenu:
         Used in other functions repeatedly, that's why it's not in __init__"""
         # Destroying last frame and creating initializing menu
         self.frame.destroy()
-        self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.frame.pack()
 
         self.entry_frame.destroy()
-        self.entry_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.entry_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.entry_frame.pack()
 
         self.listbox_frame.destroy()
-        self.listbox_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.listbox_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.listbox_frame.pack()
 
         if self.error_label:
@@ -68,63 +68,63 @@ class CustomersMenu:
 
         # Create Main Buttons To Chose Which Table You Want To Add
         customer_button = tk.Button(self.frame, text='Customer', command=self.initialize_menu,
-                                    width=30, bg=my_config.FOREGROUND)
+                                    width=30, bg=config.FOREGROUND)
         customer_button.grid(row=0, column=0, pady=10)
         order_button = tk.Button(self.frame, text='Order', command=self.go_to_order_window,
-                                 width=30, bg=my_config.FOREGROUND)
+                                 width=30, bg=config.FOREGROUND)
         order_button.grid(row=0, column=1, )
         product_button = tk.Button(self.frame, text='Product', command=self.go_to_product_window,
-                                   width=30, bg=my_config.FOREGROUND)
+                                   width=30, bg=config.FOREGROUND)
         product_button.grid(row=0, column=2)
 
         # Create text box labels for Customers
-        login_label = tk.Label(self.entry_frame, text='login:', bg=my_config.BACKGROUND)
+        login_label = tk.Label(self.entry_frame, text='login:', bg=config.BACKGROUND)
         login_label.grid(row=1, column=0, sticky=tk.E)
-        name_label = tk.Label(self.entry_frame, text='Customer name:', bg=my_config.BACKGROUND)
+        name_label = tk.Label(self.entry_frame, text='Customer name:', bg=config.BACKGROUND)
         name_label.grid(row=2, column=0, sticky=tk.E)
-        phone_label = tk.Label(self.entry_frame, text='Customer phone(optional):', bg=my_config.BACKGROUND)
+        phone_label = tk.Label(self.entry_frame, text='Customer phone(optional):', bg=config.BACKGROUND)
         phone_label.grid(row=3, column=0, sticky=tk.E)
-        email_label = tk.Label(self.entry_frame, text='Customer email:', bg=my_config.BACKGROUND)
+        email_label = tk.Label(self.entry_frame, text='Customer email:', bg=config.BACKGROUND)
         email_label.grid(row=4, column=0, sticky=tk.E)
-        perm_label = tk.Label(self.entry_frame, text='Perm:', bg=my_config.BACKGROUND)
+        perm_label = tk.Label(self.entry_frame, text='Perm:', bg=config.BACKGROUND)
         perm_label.grid(row=5, column=0, sticky=tk.E)
 
         # Create Entry box for Customers
-        self.login_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.login_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.login_entry.grid(row=1, column=1)
-        self.name_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.name_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.name_entry.grid(row=2, column=1)
-        self.phone_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.phone_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.phone_entry.grid(row=3, column=1)
-        self.email_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.email_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.email_entry.grid(row=4, column=1)
-        self.perm_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.perm_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.perm_entry.grid(row=5, column=1)
 
         # search, clear, delete, update, exit buttons
         search_button = tk.Button(self.entry_frame, text='Search', command=self.search_customer,
-                                  width=20, bg=my_config.FOREGROUND)
+                                  width=20, bg=config.FOREGROUND)
         search_button.grid(row=1, column=2, padx=20)
         update_button = tk.Button(self.entry_frame, text='Update', command=self.update_customer,
-                                  width=20, bg=my_config.FOREGROUND)
+                                  width=20, bg=config.FOREGROUND)
         update_button.grid(row=2, column=2)
         clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_customer_entrys,
-                                 width=20, bg=my_config.FOREGROUND)
+                                 width=20, bg=config.FOREGROUND)
         clear_button.grid(row=3, column=2)
         delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_customer,
-                                  width=20, bg=my_config.FOREGROUND)
+                                  width=20, bg=config.FOREGROUND)
         delete_button.grid(row=4, column=2)
 
         exit_button = tk.Button(self.entry_frame, text='log off', command=self.exit_admin_window,
-                                width=20, bg=my_config.FOREGROUND)
+                                width=20, bg=config.FOREGROUND)
         exit_button.grid(row=5, column=2)
 
         # creating listbox for customers
-        self.listbox_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.listbox_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.listbox_frame.pack()
 
         list_label = tk.Label(self.listbox_frame, text='list of customers',
-                              width=100, bg=my_config.BACKGROUND)
+                              width=100, bg=config.BACKGROUND)
         list_label.grid(row=0, column=0)
 
         # creating treeview
@@ -229,7 +229,7 @@ class CustomersMenu:
             self.error_message("perm must be int 0 or 1")
 
         # phone number is optional but if filled it must be int
-        elif self.phone_entry.get() and not my_config.is_integer(self.phone_entry.get()):
+        elif self.phone_entry.get() and not config.is_integer(self.phone_entry.get()):
             self.error_message("wrong phone number.")
 
         # everything is filled finally updating
@@ -267,7 +267,7 @@ class CustomersMenu:
             self.error_label.destroy()
 
         self.error_label = tk.Label(self.entry_frame, text=name,
-                                    bg=my_config.BACKGROUND, fg=my_config.ERROR_FOREGROUND)
+                                    bg=config.BACKGROUND, fg=config.ERROR_FOREGROUND)
         self.error_label.grid(row=6, column=1)
 
     def go_to_order_window(self):
@@ -291,7 +291,7 @@ class CustomersMenu:
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
-        my_config.my_id = -1
+        config.my_id = -1
         application = login_window.LoginWindow(self.master)
         application.initialize_login_window()
 
@@ -303,17 +303,17 @@ class ProductsMenu:
         """Creates products window."""
         self.master = master
         self.master.geometry(ADMIN_WINDOW_SIZE)
-        self.master.configure(bg=my_config.BACKGROUND)
-        self.master.title(my_config.APP_NAME)
+        self.master.configure(bg=config.BACKGROUND)
+        self.master.title(config.APP_NAME)
 
         # frame for main muttons (customer,order,product)
-        self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.frame.pack()
         # frame for all entrys, function buttons and labels
-        self.entry_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.entry_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.entry_frame.pack()
         # frame for listbox and scrollbar
-        self.listbox_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.listbox_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.listbox_frame.pack()
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
@@ -325,15 +325,15 @@ class ProductsMenu:
         Used in other functions repeatedly, that's why it's not in __init__"""
         # Destroying last frame and creating initializing menu
         self.frame.destroy()
-        self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.frame.pack()
 
         self.entry_frame.destroy()
-        self.entry_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.entry_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.entry_frame.pack()
 
         self.listbox_frame.destroy()
-        self.listbox_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.listbox_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.listbox_frame.pack()
 
         if self.error_label:
@@ -341,60 +341,60 @@ class ProductsMenu:
 
         # Create Main Buttons To Chose Which Table You Want To Add
         customer_button = tk.Button(self.frame, text='Customer', command=self.go_to_customer_window,
-                                    width=30, bg=my_config.FOREGROUND)
+                                    width=30, bg=config.FOREGROUND)
         customer_button.grid(row=0, column=0, pady=10)
         order_button = tk.Button(self.frame, text='Order', command=self.go_to_order_window,
-                                 width=30, bg=my_config.FOREGROUND)
+                                 width=30, bg=config.FOREGROUND)
         order_button.grid(row=0, column=1, )
         product_button = tk.Button(self.frame, text='Product', command=self.initialize_menu,
-                                   width=30, bg=my_config.FOREGROUND)
+                                   width=30, bg=config.FOREGROUND)
         product_button.grid(row=0, column=2)
 
         # Create text box labels for Products
-        product_name_label = tk.Label(self.entry_frame, text='Product name:', bg=my_config.BACKGROUND)
+        product_name_label = tk.Label(self.entry_frame, text='Product name:', bg=config.BACKGROUND)
         product_name_label.grid(row=0, column=0, sticky=tk.E)
-        product_price_label = tk.Label(self.entry_frame, text='Product price:', bg=my_config.BACKGROUND)
+        product_price_label = tk.Label(self.entry_frame, text='Product price:', bg=config.BACKGROUND)
         product_price_label.grid(row=1, column=0, sticky=tk.E)
-        in_stock_label = tk.Label(self.entry_frame, text='in stock:', bg=my_config.BACKGROUND)
+        in_stock_label = tk.Label(self.entry_frame, text='in stock:', bg=config.BACKGROUND)
         in_stock_label.grid(row=2, column=0, sticky=tk.E)
         description_label = tk.Label(self.entry_frame, text='description(optional):',
-                                     bg=my_config.BACKGROUND)
+                                     bg=config.BACKGROUND)
         description_label.grid(row=3, column=0, sticky=tk.E)
 
         # Create Entry Box for Products
-        self.product_name_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.product_name_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.product_name_entry.grid(row=0, column=1)
-        self.product_price_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.product_price_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.product_price_entry.grid(row=1, column=1)
-        self.in_stock_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.in_stock_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.in_stock_entry.grid(row=2, column=1)
-        self.description_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.description_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.description_entry.grid(row=3, column=1)
 
         # buttons
         # search_button = Button(self.frame, text='Search for ID', width=20)
         add_button = tk.Button(self.entry_frame, text='Add', command=self.add_product,
-                               width=20, bg=my_config.FOREGROUND)
+                               width=20, bg=config.FOREGROUND)
         add_button.grid(row=0, column=2, padx=20)
         search_button = tk.Button(self.entry_frame, text='Search', command=self.search_product,
-                                  width=20, bg=my_config.FOREGROUND)
+                                  width=20, bg=config.FOREGROUND)
         search_button.grid(row=1, column=2)
         update_button = tk.Button(self.entry_frame, text='Update', command=self.update_product,
-                                  width=20, bg=my_config.FOREGROUND)
+                                  width=20, bg=config.FOREGROUND)
         update_button.grid(row=2, column=2)
         clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_product_entrys,
-                                 width=20, bg=my_config.FOREGROUND)
+                                 width=20, bg=config.FOREGROUND)
         clear_button.grid(row=3, column=2)
         delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_product,
-                                  width=20, bg=my_config.FOREGROUND)
+                                  width=20, bg=config.FOREGROUND)
         delete_button.grid(row=4, column=2)
 
         exit_button = tk.Button(self.entry_frame, text='log off', command=self.exit_admin_window,
-                                width=20, bg=my_config.FOREGROUND)
+                                width=20, bg=config.FOREGROUND)
         exit_button.grid(row=5, column=2)
 
         list_label = tk.Label(self.listbox_frame, text='list of products',
-                              width=100, bg=my_config.BACKGROUND)
+                              width=100, bg=config.BACKGROUND)
         list_label.grid(row=0, column=0)
 
         # creating treeview
@@ -436,10 +436,10 @@ class ProductsMenu:
         # checking if all required entry's are filled correctly
         if not self.product_name_entry.get():
             self.error_message("'product name' missing")
-        elif not my_config.is_float(self.product_price_entry.get()) or float(
+        elif not config.is_float(self.product_price_entry.get()) or float(
                 self.product_price_entry.get()) < 1.0:
             self.error_message("'product price' must be positive int")
-        elif not my_config.is_integer(self.in_stock_entry.get()) or int(
+        elif not config.is_integer(self.in_stock_entry.get()) or int(
                 self.in_stock_entry.get()) < 0:
             self.error_message("'in stock' value must be non negative int")
 
@@ -520,10 +520,10 @@ class ProductsMenu:
             # checking if all required entry's are filled correctly
             if not self.product_name_entry.get():
                 self.error_message("'product name' missing")
-            elif not my_config.is_float(self.product_price_entry.get()) or float(
+            elif not config.is_float(self.product_price_entry.get()) or float(
                     self.product_price_entry.get()) < 1.0:
                 self.error_message("'product price' must be positive int")
-            elif not my_config.is_integer(self.in_stock_entry.get()) or int(
+            elif not config.is_integer(self.in_stock_entry.get()) or int(
                     self.in_stock_entry.get()) < 0:
                 self.error_message("'in stock' value must be non negative int")
 
@@ -565,7 +565,7 @@ class ProductsMenu:
             self.error_label.destroy()
 
         self.error_label = tk.Label(self.entry_frame, text=name,
-                                    bg=my_config.BACKGROUND, fg=my_config.ERROR_FOREGROUND)
+                                    bg=config.BACKGROUND, fg=config.ERROR_FOREGROUND)
         self.error_label.grid(row=4, column=1)
 
     def go_to_order_window(self):
@@ -589,7 +589,7 @@ class ProductsMenu:
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
-        my_config.my_id = -1
+        config.my_id = -1
         application = login_window.LoginWindow(self.master)
         application.initialize_login_window()
 
@@ -601,19 +601,19 @@ class OrdersMenu:
         """Creates orders window."""
         self.master = master
         self.master.geometry(ADMIN_WINDOW_SIZE)
-        self.master.configure(bg=my_config.BACKGROUND)
-        self.master.title(my_config.APP_NAME)
+        self.master.configure(bg=config.BACKGROUND)
+        self.master.title(config.APP_NAME)
 
         # frame for main muttons (customer,order,product)
-        self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.frame.pack()
         # frame for all entrys, function buttons and labels
-        self.entry_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.entry_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.entry_frame.pack()
         # frame for listbox and scrollbar
-        self.orders_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.orders_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.orders_frame.pack()
-        self.products_customers_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.products_customers_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.products_customers_frame.pack()
 
         # label that need to be defined in __init__ so functions can check if it exist and delete it
@@ -625,19 +625,19 @@ class OrdersMenu:
         Used in other functions repeatedly, that's why it's not in __init__"""
         # Destroying last frame and creating initializing menu
         self.frame.destroy()
-        self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.frame.pack()
 
         self.entry_frame.destroy()
-        self.entry_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.entry_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.entry_frame.pack()
 
         self.orders_frame.destroy()
-        self.orders_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.orders_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.orders_frame.pack()
 
         self.products_customers_frame.destroy()
-        self.products_customers_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
+        self.products_customers_frame = tk.Frame(self.master, bg=config.BACKGROUND)
         self.products_customers_frame.pack()
 
         if self.error_label:
@@ -645,62 +645,62 @@ class OrdersMenu:
 
         # Create Main Buttons To Chose Which Table You Want To Add
         customer_button = tk.Button(self.frame, text='Customer', command=self.go_to_customer_window,
-                                    width=30, bg=my_config.FOREGROUND)
+                                    width=30, bg=config.FOREGROUND)
         customer_button.grid(row=0, column=0, pady=10)
         order_button = tk.Button(self.frame, text='Order', command=self.initialize_menu,
-                                 width=30, bg=my_config.FOREGROUND)
+                                 width=30, bg=config.FOREGROUND)
         order_button.grid(row=0, column=1, )
         product_button = tk.Button(self.frame, text='Product', command=self.go_to_product_window,
-                                   width=30, bg=my_config.FOREGROUND)
+                                   width=30, bg=config.FOREGROUND)
         product_button.grid(row=0, column=2)
 
         # Create text box labels for Orders
-        id_customer_label = tk.Label(self.entry_frame, text='Customer ID:', bg=my_config.BACKGROUND)
+        id_customer_label = tk.Label(self.entry_frame, text='Customer ID:', bg=config.BACKGROUND)
         id_customer_label.grid(row=0, column=0, sticky=tk.E)
-        id_product_label = tk.Label(self.entry_frame, text='Product ID:', bg=my_config.BACKGROUND)
+        id_product_label = tk.Label(self.entry_frame, text='Product ID:', bg=config.BACKGROUND)
         id_product_label.grid(row=1, column=0, sticky=tk.E)
-        quantity_label = tk.Label(self.entry_frame, text='Quantity:', bg=my_config.BACKGROUND)
+        quantity_label = tk.Label(self.entry_frame, text='Quantity:', bg=config.BACKGROUND)
         quantity_label.grid(row=2, column=0, sticky=tk.E)
-        payment_status_label = tk.Label(self.entry_frame, text='payment status:', bg=my_config.BACKGROUND)
+        payment_status_label = tk.Label(self.entry_frame, text='payment status:', bg=config.BACKGROUND)
         payment_status_label.grid(row=3, column=0, sticky=tk.E)
-        send_status_label = tk.Label(self.entry_frame, text='send status:', bg=my_config.BACKGROUND)
+        send_status_label = tk.Label(self.entry_frame, text='send status:', bg=config.BACKGROUND)
         send_status_label.grid(row=4, column=0, sticky=tk.E)
-        location_label = tk.Label(self.entry_frame, text='location:', bg=my_config.BACKGROUND)
+        location_label = tk.Label(self.entry_frame, text='location:', bg=config.BACKGROUND)
         location_label.grid(row=5, column=0, sticky=tk.E)
 
         # Create Entry Box for Orders
-        self.id_customer_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.id_customer_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.id_customer_entry.grid(row=0, column=1)
-        self.id_product_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.id_product_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.id_product_entry.grid(row=1, column=1)
-        self.quantity_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.quantity_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.quantity_entry.grid(row=2, column=1)
-        self.payment_status_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.payment_status_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.payment_status_entry.grid(row=3, column=1)
-        self.send_status_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.send_status_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.send_status_entry.grid(row=4, column=1)
-        self.location_entry = tk.Entry(self.entry_frame, width=30, bg=my_config.FOREGROUND)
+        self.location_entry = tk.Entry(self.entry_frame, width=30, bg=config.FOREGROUND)
         self.location_entry.grid(row=5, column=1)
 
         # buttons
         search_button = tk.Button(self.entry_frame, text='Search', command=self.search_order, width=20,
-                                  bg=my_config.FOREGROUND)
+                                  bg=config.FOREGROUND)
         search_button.grid(row=0, column=2, padx=20)
         add_button = tk.Button(self.entry_frame, text='Add', command=self.add_order,
-                               width=20, bg=my_config.FOREGROUND)
+                               width=20, bg=config.FOREGROUND)
         add_button.grid(row=1, column=2, padx=20)
         clear_button = tk.Button(self.entry_frame, text='Clear', command=self.initialize_menu,
-                                 width=20, bg=my_config.FOREGROUND)
+                                 width=20, bg=config.FOREGROUND)
         clear_button.grid(row=2, column=2)
         delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_order,
-                                  width=20, bg=my_config.FOREGROUND)
+                                  width=20, bg=config.FOREGROUND)
         delete_button.grid(row=3, column=2)
         exit_button = tk.Button(self.entry_frame, text='log off', command=self.exit_admin_window,
-                                width=20, bg=my_config.FOREGROUND)
+                                width=20, bg=config.FOREGROUND)
         exit_button.grid(row=4, column=2)
 
         #  =================creating treeview (orders) =======================
-        list_label = tk.Label(self.orders_frame, text='Orders', bg=my_config.BACKGROUND)
+        list_label = tk.Label(self.orders_frame, text='Orders', bg=config.BACKGROUND)
         list_label.grid(row=0, column=0)
 
         self.order_tree = Treeview(self.orders_frame, columns=ORDER_COLUMNS, show='headings', height=8)
@@ -720,7 +720,7 @@ class OrdersMenu:
 
         #  =================creating treeview (products) =======================
         list_label1 = tk.Label(self.products_customers_frame, text='Products',
-                               width=25, bg=my_config.BACKGROUND)
+                               width=25, bg=config.BACKGROUND)
         list_label1.grid(row=0, column=0)
 
         self.product_tree = Treeview(self.products_customers_frame,
@@ -740,7 +740,7 @@ class OrdersMenu:
 
         #  =================creating treeview (customers) =======================
         list_label2 = tk.Label(self.products_customers_frame, text='Customers',
-                               width=25, bg=my_config.BACKGROUND)
+                               width=25, bg=config.BACKGROUND)
         list_label2.grid(row=0, column=1)
         self.customers_tree = Treeview(self.products_customers_frame,
                                        columns=CUSTOMER_COLUMNS, show='headings', height=8)
@@ -785,7 +785,7 @@ class OrdersMenu:
             self.error_message("'id customer' missing")
         elif not self.id_product_entry.get():
             self.error_message("'id product' missing")
-        elif not my_config.is_integer(self.quantity_entry.get()) or int(self.quantity_entry.get()) < 1:
+        elif not config.is_integer(self.quantity_entry.get()) or int(self.quantity_entry.get()) < 1:
             self.error_message("'quantity' Must be an positive integer")
 
         elif self.payment_status_entry.get() not in ['0', '1']:
@@ -930,8 +930,8 @@ class OrdersMenu:
         if self.error_label:
             self.error_label.destroy()
 
-        self.error_label = tk.Label(self.frame, text=name, bg=my_config.BACKGROUND,
-                                    fg=my_config.ERROR_FOREGROUND)
+        self.error_label = tk.Label(self.frame, text=name, bg=config.BACKGROUND,
+                                    fg=config.ERROR_FOREGROUND)
         self.error_label.grid(row=11, column=1)
 
     def go_to_customer_window(self):
@@ -958,6 +958,6 @@ class OrdersMenu:
         self.entry_frame.destroy()
         self.orders_frame.destroy()
         self.products_customers_frame.destroy()
-        my_config.my_id = -1
+        config.my_id = -1
         application = login_window.LoginWindow(self.master)
         application.initialize_login_window()
