@@ -52,13 +52,14 @@ class CustomerApp:
         self.search_button = tk.Button(self.frame, text='List of products',
                                        bg=my_config.FOREGROUND, command=self.list_products, width=16)
         self.search_button.grid(row=0, column=0, pady=(10, 3))
-        self.edit_button = tk.Button(self.frame, text='Edit account', bg=my_config.FOREGROUND, command=self.account_edit,
-                                     width=16)
+        self.edit_button = tk.Button(self.frame, text='Edit account', bg=my_config.FOREGROUND,
+                                     command=self.account_edit, width=16)
         self.edit_button.grid(row=1, column=0, pady=(0, 3))
-        self.orders_button = tk.Button(self.frame, text='My Orders', bg=my_config.FOREGROUND, command=self.my_orders,
-                                       width=16)
+        self.orders_button = tk.Button(self.frame, text='My Orders', bg=my_config.FOREGROUND,
+                                       command=self.my_orders, width=16)
         self.orders_button.grid(row=2, column=0, pady=(0, 3))
-        self.logoff_button = tk.Button(self.frame, text='Logoff', bg=my_config.FOREGROUND, command=self.log_off, width=16)
+        self.logoff_button = tk.Button(self.frame, text='Logoff', bg=my_config.FOREGROUND,
+                                       command=self.log_off, width=16)
         self.logoff_button.grid(row=3, column=0, pady=(0, 3))
         self.frame.pack()
 
@@ -72,11 +73,13 @@ class CustomerApp:
         self.function_frame2 = tk.Frame(self.master, bg=my_config.BACKGROUND)
         self.function_frame2.pack()
 
-        list_label = tk.Label(self.function_frame, text='list of products', width=100, bg=my_config.BACKGROUND)
+        list_label = tk.Label(self.function_frame, text='list of products',
+                              width=100, bg=my_config.BACKGROUND)
         list_label.grid(row=0, column=0, pady=(10, 0))
 
         # creating treeview for customers
-        self.product_tree = Treeview(self.function_frame, columns=PRODUCT_COLUMNS, show='headings', height=10)
+        self.product_tree = Treeview(self.function_frame, columns=PRODUCT_COLUMNS,
+                                     show='headings', height=10)
         self.product_tree.grid(row=1, column=0, padx=8)
 
         for column_name, width in zip(PRODUCT_COLUMNS, PRODUCT_COLUMNS_SIZE):
@@ -131,7 +134,8 @@ class CustomerApp:
             self.error_message("'location' missing")
 
         # checking if customer and product exists
-        elif not db.is_customer_id_exist(my_config.my_id) or not db.is_product_id_exists(self.id_product_entry.get()):
+        elif not db.is_customer_id_exist(my_config.my_id) or not db.is_product_id_exists(
+                self.id_product_entry.get()):
             self.error_message("product or customer id not Exists")
 
         # function itself check if there is enough products, and count total price (quantity*price)
@@ -222,7 +226,8 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
         list_label.grid(row=0, column=0, pady=(10, 0))
 
         # creating treeview for customers
-        self.my_orders_tree = Treeview(self.function_frame, columns=MY_ORDERS_COLUMNS, show='headings', height=10)
+        self.my_orders_tree = Treeview(self.function_frame, columns=MY_ORDERS_COLUMNS,
+                                       show='headings', height=10)
         self.my_orders_tree.grid(row=1, column=0)
 
         for column_name, width in zip(MY_ORDERS_COLUMNS, MY_ORDERS_COLUMNS_SIZE):
@@ -248,7 +253,8 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
         if self.error_label:
             self.error_label.destroy()
 
-        self.error_label = tk.Label(self.function_frame2, text=name, bg=my_config.BACKGROUND, fg=my_config.ERROR_FOREGROUND)
+        self.error_label = tk.Label(self.function_frame2, text=name, bg=my_config.BACKGROUND,
+                                    fg=my_config.ERROR_FOREGROUND)
         self.error_label.grid(row=3, column=1)
 
     def log_off(self):
@@ -307,10 +313,11 @@ class AccountEdit:
         self.email_entry.grid(row=5, column=1)
 
         # Create Buttons
-        self.change_button = tk.Button(self.frame, text='change', bg=my_config.FOREGROUND, command=self.set_change,
-                                       width=16)
+        self.change_button = tk.Button(self.frame, text='change', bg=my_config.FOREGROUND,
+                                       command=self.set_change, width=16)
         self.change_button.grid(row=1, column=2, padx=(10, 0), pady=(10, 0))
-        self.cancel_button = tk.Button(self.frame, text='Cancel', bg=my_config.FOREGROUND, command=self.exit, width=16)
+        self.cancel_button = tk.Button(self.frame, text='Cancel', bg=my_config.FOREGROUND,
+                                       command=self.exit, width=16)
         self.cancel_button.grid(row=2, column=2, padx=(10, 0))
 
         # getting customer info from DB
@@ -352,7 +359,8 @@ class AccountEdit:
                                  self.phone_entry.get())
             else:
                 # passing old password to function (no change)
-                db.edit_customer(my_config.my_id, db.return_customer(my_config.my_id)[2], self.name_entry.get(),
+                db.edit_customer(my_config.my_id,
+                                 db.return_customer(my_config.my_id)[2], self.name_entry.get(),
                                  self.email_entry.get(), self.phone_entry.get())
 
             self.error_message("Account has been updated.")
@@ -366,7 +374,8 @@ class AccountEdit:
         if self.error_label:
             self.error_label.destroy()
 
-        self.error_label = tk.Label(self.frame, fg=my_config.ERROR_FOREGROUND, text=name, bg=my_config.BACKGROUND)
+        self.error_label = tk.Label(self.frame, fg=my_config.ERROR_FOREGROUND,
+                                    text=name, bg=my_config.BACKGROUND)
         self.error_label.grid(row=6, column=1)
 
     def exit(self):

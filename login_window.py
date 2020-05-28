@@ -41,7 +41,8 @@ class LoginWindow:
         self.password_entry.grid(row=1, column=1)
 
         # buttons
-        self.login_button = tk.Button(self.frame, text='Log in', bg=my_config.FOREGROUND, command=self.login, width=16)
+        self.login_button = tk.Button(self.frame, text='Log in', bg=my_config.FOREGROUND,
+                                      command=self.login, width=16)
         self.login_button.grid(row=3, column=1, pady=(10, 0))
         self.create_button = tk.Button(self.frame, text='Create new account',
                                        bg=my_config.FOREGROUND, command=self.create_account, width=16)
@@ -56,19 +57,19 @@ class LoginWindow:
 
         # checking if all required entry's are filled
         if not self.login_entry.get():
-            self.error_label = tk.Label(self.frame, text="login missing", fg=my_config.ERROR_FOREGROUND,
-                                        bg=my_config.BACKGROUND)
+            self.error_label = tk.Label(self.frame, text="login missing",
+                                        fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
             self.error_label.grid(row=2, column=1)
         elif not self.password_entry.get():
-            self.error_label = tk.Label(self.frame, text="password missing", fg=my_config.ERROR_FOREGROUND,
-                                        bg=my_config.BACKGROUND)
+            self.error_label = tk.Label(self.frame, text="password missing",
+                                        fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
             self.error_label.grid(row=2, column=1)
 
         else:
             my_config.my_id, perm = db.customer_perm(self.login_entry.get(), self.password_entry.get())
             if perm == -1 or my_config.my_id == -1:
-                self.error_label = tk.Label(self.frame, text="try again..", fg=my_config.ERROR_FOREGROUND,
-                                            bg=my_config.BACKGROUND)
+                self.error_label = tk.Label(self.frame, text="try again..",
+                                            fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
                 self.error_label.grid(row=2, column=1)
             elif perm == my_config.ADMIN_PERM:
                 self.admin_app()
@@ -121,36 +122,37 @@ class LoginWindow:
 
         # checking if all required entry's are filled.
         if not self.login_entry.get():
-            self.error_label = tk.Label(self.frame, text="'login' missing", fg=my_config.ERROR_FOREGROUND,
-                                        bg=my_config.BACKGROUND)
+            self.error_label = tk.Label(self.frame, text="'login' missing",
+                                        fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
             self.error_label.grid(row=5, column=1)
         elif len(self.password_entry.get()) < 6:
-            self.error_label = tk.Label(self.frame, text="minimum password length is 6", fg=my_config.ERROR_FOREGROUND,
-                                        bg=my_config.BACKGROUND)
+            self.error_label = tk.Label(self.frame, text="minimum password length is 6",
+                                        fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
             self.error_label.grid(row=5, column=1)
         elif not self.name_entry.get():
-            self.error_label = tk.Label(self.frame, text="'name' missing", fg=my_config.ERROR_FOREGROUND,
-                                        bg=my_config.BACKGROUND)
+            self.error_label = tk.Label(self.frame, text="'name' missing",
+                                        fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
             self.error_label.grid(row=5, column=1)
         elif not self.email_entry.get():
-            self.error_label = tk.Label(self.frame, text="'email' missing", fg=my_config.ERROR_FOREGROUND,
-                                        bg=my_config.BACKGROUND)
+            self.error_label = tk.Label(self.frame, text="'email' missing",
+                                        fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
             self.error_label.grid(row=5, column=1)
         elif self.phone_entry.get() and not my_config.is_integer(self.phone_entry.get()):
-            self.error_label = tk.Label(self.frame, text="wrong phone number", fg=my_config.ERROR_FOREGROUND,
-                                        bg=my_config.BACKGROUND)
+            self.error_label = tk.Label(self.frame, text="wrong phone number",
+                                        fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
             self.error_label.grid(row=5, column=1)
 
         else:
             # checking if customer is in DB
             exist = db.is_customer_exists(self.login_entry.get(), self.email_entry.get())
             if exist:
-                self.error_label = tk.Label(self.frame, text="'{}' exists".format(exist), fg=my_config.ERROR_FOREGROUND,
-                                            bg=my_config.BACKGROUND)
+                self.error_label = tk.Label(self.frame, text="'{}' exists".format(exist),
+                                            fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
                 self.error_label.grid(row=5, column=1)
             else:
-                db.add_customer(self.login_entry.get(), self.password_entry.get(), self.name_entry.get(),
-                                self.phone_entry.get(), self.email_entry.get())
+                db.add_customer(self.login_entry.get(), self.password_entry.get(),
+                                self.name_entry.get(), self.phone_entry.get(),
+                                self.email_entry.get())
                 self.frame.destroy()
                 application = LoginWindow(self.master)
                 application.initialize_login_window()
