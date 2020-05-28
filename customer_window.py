@@ -195,8 +195,7 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
                 .format(record[3], record[4], record[5], record[6], record[7], record[8])
 
             self.error_label = tk.Message(self.function_frame2, text=order_info,
-                                          bg=my_config.BACKGROUND, fg=my_config.ERROR_FOREGROUND,
-                                          width=300)
+                                          bg=my_config.BACKGROUND, width=300)
             self.error_label.grid(row=0, column=0)
 
     def account_edit(self):
