@@ -127,11 +127,11 @@ class CustomerApp:
         details_button.grid(row=4, column=1, )
 
     def place_order(self):
-        """Place new order, if all required entry's are filled."""
+        """Place new order, if all required entries are filled."""
         if self.error_label:
             self.error_label.destroy()
 
-        # checking if all required entry's are filled properly
+        # checking if all required entries are filled properly
         if not self.id_product_entry.get():
             self.error_message("'id product' missing")
         elif not my_config.is_integer(self.quantity_entry.get()) or int(self.quantity_entry.get()) < 1:
@@ -177,7 +177,7 @@ class CustomerApp:
             self.error_message("Product not exist.")
 
     def product_selection(self, event):
-        """Add's id of selected product to designated entry."""
+        """Adds id of selected product to designated entry."""
         try:
             if self.product_tree.selection():
                 record = self.product_tree.set(self.product_tree.selection())
@@ -188,7 +188,7 @@ class CustomerApp:
             pass
 
     def order_selection(self, event):
-        """Show's details of selected order."""
+        """Shows details of selected order."""
         if self.my_orders_tree.selection():
             record = self.my_orders_tree.set(self.my_orders_tree.selection())
             record = db.return_order(record[PRODUCT_COLUMNS[0]])
@@ -209,7 +209,7 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
             self.error_label.grid(row=0, column=0)
 
     def account_edit(self):
-        """Run's new window for editing account."""
+        """Runs new window for editing account."""
         if self.frame:
             self.frame.destroy()
         if self.function_frame:
@@ -221,7 +221,7 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
         AccountEdit(self.master)
 
     def my_orders(self):
-        """Create's menu with list of user orders."""
+        """Creates menu with list of user orders."""
         self.initialize_main_buttons()
 
         self.function_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
@@ -251,7 +251,7 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
             self.my_orders_tree.insert('', tk.END, values=[record[0], record[1], record[2], record[3]])
 
     def error_message(self, name):
-        """Show's passed message in designated place
+        """Shows passed message in designated place
 
         Used to clear code and make it more readable as it is
         called multiple times."""
@@ -264,7 +264,7 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
         self.error_label.grid(row=3, column=1)
 
     def log_off(self):
-        """Return's User to logging window."""
+        """Returns User to logging window."""
         my_config.my_id = -1
         if self.frame:
             self.frame.destroy()
@@ -337,7 +337,7 @@ class AccountEdit:
             self.exit()
 
     def set_change(self):
-        """Change's customer account details if all required entry's are filled properly."""
+        """Changes customer account details if all required entries are filled properly."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -345,7 +345,7 @@ class AccountEdit:
         if 0 < len(self.new_password_entry.get()) < 6:
             self.error_message('minimum password length is 6')
 
-        # checking if all required entry's are filled properly
+        # checking if all required entries are filled properly
         elif self.password_entry.get() != db.return_customer(my_config.my_id)[2]:
             self.error_message('password does not match.')
         elif not self.name_entry.get():
@@ -356,7 +356,7 @@ class AccountEdit:
             self.error_message('Can not update empty email.')
 
         else:
-            # if all entry's are filled correctly
+            # if all entries are filled correctly
 
             if self.new_password_entry:
                 # passing new password
@@ -372,7 +372,7 @@ class AccountEdit:
             self.error_message("Account has been updated.")
 
     def error_message(self, name):
-        """Show's passed message in designated place
+        """Shows passed message in designated place
 
         Used to clear code and make it more readable as it is
         called multiple times."""
@@ -385,7 +385,7 @@ class AccountEdit:
         self.error_label.grid(row=6, column=1)
 
     def exit(self):
-        """Run's back main customer window."""
+        """Runs back main customer window."""
         self.frame.destroy()
         application = CustomerApp(self.master)
         application.initialize_main_buttons()

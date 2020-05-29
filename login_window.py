@@ -24,7 +24,7 @@ class LoginWindow:
         # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
 
-        # class entry's
+        # class entries
         self.login_entry = None
         self.password_entry = None
         self.name_entry = None
@@ -62,7 +62,7 @@ class LoginWindow:
         if self.error_label:
             self.error_label.destroy()
 
-        # checking if all required entry's are filled
+        # checking if all required entries are filled
         if not self.login_entry.get():
             self.error_label = tk.Label(self.frame, text="login missing",
                                         fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
@@ -122,12 +122,12 @@ class LoginWindow:
         create_button.grid(row=6, column=1, pady=(20, 0))
 
     def create_account_db(self):
-        """Create new account if all required entry's are filled."""
+        """Create new account if all required entries are filled."""
         # deleting missing label from last add_order call, if it exists
         if self.error_label:
             self.error_label.destroy()
 
-        # checking if all required entry's are filled.
+        # checking if all required entries are filled.
         if not self.login_entry.get():
             self.error_label = tk.Label(self.frame, text="'login' missing",
                                         fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)

@@ -36,7 +36,7 @@ class CustomersMenu:
         # frame for main muttons (customer,order,product)
         self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
         self.frame.pack()
-        # frame for all entry's, function buttons and labels
+        # frame for all entries, function buttons and labels
         self.entry_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
         self.entry_frame.pack()
         # frame for listbox and scrollbar
@@ -155,7 +155,7 @@ class CustomersMenu:
             self.customers_tree.insert('', tk.END, values=record)
 
     def clear_customer_entrys(self):
-        """Clears all entry's."""
+        """Clears all entries."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -166,7 +166,7 @@ class CustomersMenu:
         self.perm_entry.delete(0, tk.END)
 
     def search_customer(self):
-        """Insert's into listbox founded customers"""
+        """Inserts into listbox founded customers"""
         try:
             if self.error_label:
                 self.error_label.destroy()
@@ -216,7 +216,7 @@ class CustomersMenu:
             self.error_message("record not exists in database.")
 
     def update_customer(self):
-        """Updates customer, if all required entry's are filled properly."""
+        """Updates customer, if all required entries are filled properly."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -250,7 +250,7 @@ class CustomersMenu:
             self.initialize_menu()
 
     def get_selected_customer(self, event):
-        """Inserts selected customer data into entry's."""
+        """Inserts selected customer data into entries."""
         self.clear_customer_entrys()
         if self.error_label:
             self.error_label.destroy()
@@ -265,7 +265,7 @@ class CustomersMenu:
             self.perm_entry.insert(tk.END, record[CUSTOMER_COLUMN_FULL[5]])
 
     def error_message(self, name):
-        """Show's passed message in designated place
+        """Shows passed message in designated place
 
             Used to clear code and make it more readable as it is
             called multiple times."""
@@ -278,7 +278,7 @@ class CustomersMenu:
         self.error_label.grid(row=6, column=1)
 
     def go_to_order_window(self):
-        """Run's order window."""
+        """Runs order window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
@@ -286,7 +286,7 @@ class CustomersMenu:
         application.initialize_menu()
 
     def go_to_product_window(self):
-        """Run's products window."""
+        """Runs products window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
@@ -294,7 +294,7 @@ class CustomersMenu:
         application.initialize_menu()
 
     def exit_admin_window(self):
-        """Run's log in window."""
+        """Runs log in window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
@@ -431,7 +431,7 @@ class ProductsMenu:
             self.product_tree.insert('', tk.END, values=record)
 
     def clear_product_entrys(self):
-        """Clears all entry's."""
+        """Clears all entries."""
         if self.error_label:
             self.error_label.destroy()
 
@@ -441,12 +441,12 @@ class ProductsMenu:
         self.description_entry.delete(0, tk.END)
 
     def add_product(self):
-        """Adds new product, if all required entry's are filled properly."""
+        """Adds new product, if all required entries are filled properly."""
         # deleting missing label from last add_order call, if it exists
         if self.error_label:
             self.error_label.destroy()
 
-        # checking if all required entry's are filled correctly
+        # checking if all required entries are filled correctly
         if not self.product_name_entry.get():
             self.error_message("'product name' missing")
         elif not my_config.is_float(self.product_price_entry.get()) or float(
@@ -470,7 +470,7 @@ class ProductsMenu:
                 self.initialize_menu()
 
     def search_product(self):
-        """Insert's into listbox founded products"""
+        """Inserts into listbox founded products"""
         if self.error_label:
             self.error_label.destroy()
 
@@ -520,7 +520,7 @@ class ProductsMenu:
             self.error_message("record not exists in database.")
 
     def update_product(self):
-        """Updates product, if all required entry's are filled properly."""
+        """Updates product, if all required entries are filled properly."""
         try:
             if self.error_label:
                 self.error_label.destroy()
@@ -530,7 +530,7 @@ class ProductsMenu:
                 self.error_message("please select one from listbox.")
                 return
 
-            # checking if all required entry's are filled correctly
+            # checking if all required entries are filled correctly
             if not self.product_name_entry.get():
                 self.error_message("'product name' missing")
             elif not my_config.is_float(self.product_price_entry.get()) or float(
@@ -553,7 +553,7 @@ class ProductsMenu:
             pass
 
     def get_selected_product(self, event):
-        """Inserts selected product data into entry's."""
+        """Inserts selected product data into entries."""
         self.clear_product_entrys()
         if self.error_label:
             self.error_label.destroy()
@@ -569,7 +569,7 @@ class ProductsMenu:
             pass
 
     def error_message(self, name):
-        """Show's passed message in designated place
+        """Shows passed message in designated place
 
             Used to clear code and make it more readable as it is
             called multiple times."""
@@ -582,7 +582,7 @@ class ProductsMenu:
         self.error_label.grid(row=4, column=1)
 
     def go_to_order_window(self):
-        """Run's order window."""
+        """Runs order window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
@@ -590,7 +590,7 @@ class ProductsMenu:
         application.initialize_menu()
 
     def go_to_customer_window(self):
-        """Run's customer window."""
+        """Runs customer window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
@@ -598,7 +598,7 @@ class ProductsMenu:
         application.initialize_menu()
 
     def exit_admin_window(self):
-        """Run's log in window."""
+        """Runs log in window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
@@ -798,12 +798,12 @@ class OrdersMenu:
             self.customers_tree.insert('', tk.END, values=[record[0], record[2], record[4]])
 
     def add_order(self):
-        """Place new order, if all required entry's are filled."""
+        """Place new order, if all required entries are filled."""
         # deleting missing label from last add_order call if it exists
         if self.error_label:
             self.error_label.destroy()
 
-        # checking if all required entry's are filled properly
+        # checking if all required entries are filled properly
         if not self.id_customer_entry.get():
             self.error_message("'id customer' missing")
         elif not self.id_product_entry.get():
@@ -851,7 +851,7 @@ class OrdersMenu:
             self.initialize_menu()
 
     def search_order(self):
-        """Insert's into listbox founded orders"""
+        """Inserts into listbox founded orders"""
         if self.error_label:
             self.error_label.destroy()
 
@@ -945,7 +945,7 @@ class OrdersMenu:
                     record[0], record[3], record[5], record[6], record[8], record[7]])
 
     def error_message(self, name):
-        """Show's passed message in designated place
+        """Shows passed message in designated place
 
             Used to clear code and make it more readable as it is
             called multiple times."""
@@ -958,7 +958,7 @@ class OrdersMenu:
         self.error_label.grid(row=11, column=1)
 
     def go_to_customer_window(self):
-        """Run's customer window."""
+        """Runs customer window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.orders_frame.destroy()
@@ -967,7 +967,7 @@ class OrdersMenu:
         application.initialize_menu()
 
     def go_to_product_window(self):
-        """Run's product window."""
+        """Runs product window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.orders_frame.destroy()
@@ -976,7 +976,7 @@ class OrdersMenu:
         application.initialize_menu()
 
     def exit_admin_window(self):
-        """Run's log in window."""
+        """Runs log in window."""
         self.frame.destroy()
         self.entry_frame.destroy()
         self.orders_frame.destroy()
