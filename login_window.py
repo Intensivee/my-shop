@@ -128,6 +128,7 @@ class LoginWindow:
             self.error_label.destroy()
 
         # checking if all required entries are filled.
+        # checking if all required entries are filled.
         if not self.login_entry.get():
             self.error_label = tk.Label(self.frame, text="'login' missing",
                                         fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)

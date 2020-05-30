@@ -3,8 +3,8 @@ import tkinter as tk
 import tkinter.messagebox
 from tkinter.ttk import Treeview
 
-import login_window
 import db_manager as db
+import login_window
 import my_config
 
 # Module Constants:

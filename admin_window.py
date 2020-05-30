@@ -3,8 +3,8 @@ import tkinter as tk
 import tkinter.messagebox
 from tkinter.ttk import Treeview
 
-import login_window
 import db_manager as db
+import login_window
 import my_config
 
 # Module Constants:
@@ -115,7 +115,7 @@ class CustomersMenu:
         update_button = tk.Button(self.entry_frame, text='Update', command=self.update_customer,
                                   width=20, bg=my_config.FOREGROUND)
         update_button.grid(row=2, column=2)
-        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_customer_entrys,
+        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_customer_entries,
                                  width=20, bg=my_config.FOREGROUND)
         clear_button.grid(row=3, column=2)
         delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_customer,
@@ -154,7 +154,7 @@ class CustomersMenu:
             # [record[0], record[1], record[2], record[3], record[4], record[5]]
             self.customers_tree.insert('', tk.END, values=record)
 
-    def clear_customer_entrys(self):
+    def clear_customer_entries(self):
         """Clears all entries."""
         if self.error_label:
             self.error_label.destroy()
@@ -251,7 +251,7 @@ class CustomersMenu:
 
     def get_selected_customer(self, event):
         """Inserts selected customer data into entries."""
-        self.clear_customer_entrys()
+        self.clear_customer_entries()
         if self.error_label:
             self.error_label.destroy()
 
@@ -316,7 +316,7 @@ class ProductsMenu:
         # frame for main muttons (customer,order,product)
         self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
         self.frame.pack()
-        # frame for all entrys, function buttons and labels
+        # frame for all entries, function buttons and labels
         self.entry_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
         self.entry_frame.pack()
         # frame for listbox and scrollbar
@@ -395,7 +395,7 @@ class ProductsMenu:
         update_button = tk.Button(self.entry_frame, text='Update', command=self.update_product,
                                   width=20, bg=my_config.FOREGROUND)
         update_button.grid(row=2, column=2)
-        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_product_entrys,
+        clear_button = tk.Button(self.entry_frame, text='Clear', command=self.clear_product_entries,
                                  width=20, bg=my_config.FOREGROUND)
         clear_button.grid(row=3, column=2)
         delete_button = tk.Button(self.entry_frame, text='Delete', command=self.delete_product,
@@ -430,7 +430,7 @@ class ProductsMenu:
             # [record[0], record[1], record[2], record[3], record[4]])
             self.product_tree.insert('', tk.END, values=record)
 
-    def clear_product_entrys(self):
+    def clear_product_entries(self):
         """Clears all entries."""
         if self.error_label:
             self.error_label.destroy()
@@ -554,7 +554,7 @@ class ProductsMenu:
 
     def get_selected_product(self, event):
         """Inserts selected product data into entries."""
-        self.clear_product_entrys()
+        self.clear_product_entries()
         if self.error_label:
             self.error_label.destroy()
         try:
@@ -620,7 +620,7 @@ class OrdersMenu:
         # frame for main muttons (customer,order,product)
         self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
         self.frame.pack()
-        # frame for all entrys, function buttons and labels
+        # frame for all entries, function buttons and labels
         self.entry_frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
         self.entry_frame.pack()
         # frame for listbox and scrollbar
