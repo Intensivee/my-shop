@@ -24,7 +24,3 @@ passsword: admin123
 2. User perm
 login: wojtekkk
 password: mojehaslo123
-
-
-The App is not fully completed:
-- lacks unit testing 
