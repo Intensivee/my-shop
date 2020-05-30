@@ -100,7 +100,7 @@ class TestOrdersMenu(unittest.TestCase):
         self.assertFalse(self.application.send_status_entry.get())
         self.assertFalse(self.application.location_entry.get())
 
-    def test_search_product(self):
+    def test_search_order(self):
         """Tests search function."""
         self.application.send_status_entry.insert(tk.END, "1")
         self.application.search_order()  # inserts into tree searched values
