@@ -1,6 +1,6 @@
 """Unit tests for admin_window module."""
-import unittest
 import tkinter as tk
+import unittest
 
 import admin_window
 
@@ -95,3 +95,7 @@ class TestOrdersMenu(unittest.TestCase):
 
         for child in self.application.order_tree.get_children():
             self.assertTrue(self.application.order_tree.item(child)['values'][3] == 1)
+
+
+if __name__ == '__main__':
+    unittest.main()
