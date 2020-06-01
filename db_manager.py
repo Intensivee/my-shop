@@ -107,8 +107,7 @@ def search_customer(login="", name="", phone="", email="", perm=""):
             """SELECT id_customer, login, customer_name, phone, email, perm
             FROM Customers WHERE login=? OR customer_name=? OR phone=? OR email=? or perm=?""",
             (login, name, phone, email, perm))
-        rows = cursor.fetchall()
-        return rows
+        return cursor.fetchall()
 
 
 def delete_customer(customer_id, check_if_exists=1):

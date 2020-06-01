@@ -6,16 +6,13 @@ import admin_window
 
 
 class TestProductsMenu(unittest.TestCase):
-    """Tests functions in ProductsMenu."""
 
     def setUp(self):
-        """Initializes window."""
         root = tk.Tk()
         self.application = admin_window.ProductsMenu(root)
         self.application.initialize_menu()
 
     def test_clear_product_entries(self):
-        """Tests clear_product_entries function."""
         self.application.product_name_entry.insert(tk.END, "LG G6")
         self.application.product_price_entry.insert(tk.END, "123")
         self.application.in_stock_entry.insert(tk.END, "5")
@@ -29,7 +26,6 @@ class TestProductsMenu(unittest.TestCase):
         self.assertFalse(self.application.description_entry.get())
 
     def test_search_product(self):
-        """Tests search function."""
         self.application.clear_product_entries()
         self.application.product_name_entry.insert(tk.END, "LG G6")
         self.application.search_product()  # inserts into tree searched values
@@ -39,16 +35,13 @@ class TestProductsMenu(unittest.TestCase):
 
 
 class TestCustomersMenu(unittest.TestCase):
-    """Tests functions in CustomerMenu."""
 
     def setUp(self):
-        """Initializes window."""
         root = tk.Tk()
         self.application = admin_window.CustomersMenu(root)
         self.application.initialize_menu()
 
     def test_clear_customer_entries(self):
-        """Tests clear_customer_entries function."""
         self.application.name_entry.insert(tk.END, "asdasd")
         self.application.login_entry.insert(tk.END, "123123")
         self.application.email_entry.insert(tk.END, "asdasd@gmail.com")
@@ -64,7 +57,6 @@ class TestCustomersMenu(unittest.TestCase):
         self.assertFalse(self.application.perm_entry.get())
 
     def test_search_customer(self):
-        """Tests search function."""
         self.application.clear_customer_entries()
         self.application.login_entry.insert(tk.END, "admin")
         self.application.search_customer()  # inserts into tree searched values
@@ -74,16 +66,13 @@ class TestCustomersMenu(unittest.TestCase):
 
 
 class TestOrdersMenu(unittest.TestCase):
-    """Tests functions in OrdersMenu."""
 
     def setUp(self):
-        """Initializes window."""
         root = tk.Tk()
         self.application = admin_window.OrdersMenu(root)
         self.application.initialize_menu()
 
     def test_clear_entries(self):
-        """Tests clear function."""
         self.application.id_customer_entry.insert(tk.END, "1")
         self.application.id_product_entry.insert(tk.END, "1")
         self.application.quantity_entry.insert(tk.END, "5")
@@ -101,7 +90,6 @@ class TestOrdersMenu(unittest.TestCase):
         self.assertFalse(self.application.location_entry.get())
 
     def test_search_order(self):
-        """Tests search function."""
         self.application.send_status_entry.insert(tk.END, "1")
         self.application.search_order()  # inserts into tree searched values
 
