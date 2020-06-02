@@ -1,6 +1,7 @@
 """Contains values and functions used in many modules."""
 
-my_id = -1
+MY_ID = -1
+CUSTOMER_ABSENT, CUSTOMER_LOGIN, CUSTOMER_EMAIL = (0, 1, 2)
 
 APP_NAME = "Mendiona bytes"
 ADMIN_PERM = 1

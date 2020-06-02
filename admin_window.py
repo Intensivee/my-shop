@@ -1,6 +1,6 @@
 """Module contains major admin classes"""
+from tkinter import messagebox
 import tkinter as tk
-import tkinter.messagebox
 from tkinter.ttk import Treeview
 
 import db_manager as db
@@ -175,8 +175,8 @@ class CustomersMenu:
                                          self.phone_entry.get(), self.email_entry.get(),
                                          self.perm_entry.get())
 
-            for i in self.customers_tree.get_children():
-                self.customers_tree.delete(i)
+            for child in self.customers_tree.get_children():
+                self.customers_tree.delete(child)
             for record in records:
                 self.customers_tree.insert('', tk.END, values=record)
 
@@ -205,7 +205,7 @@ class CustomersMenu:
                 customer_info = "{}\n{}\n{}".format(record[0], record[1], record[2])
 
             # window asking to delete
-            answer = tkinter.messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(customer_info))
+            answer = messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(customer_info))
             if answer == 'yes':
                 db.delete_customer(selected_record[CUSTOMER_COLUMN_FULL[0]], 0)
                 # refreshing all
@@ -298,7 +298,6 @@ class CustomersMenu:
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
-        my_config.my_id = -1
         application = login_window.LoginWindow(self.master)
         application.initialize_login_window()
 
@@ -475,8 +474,8 @@ class ProductsMenu:
             self.error_label.destroy()
 
         try:
-            for i in self.product_tree.get_children():
-                self.product_tree.delete(i)
+            for child in self.product_tree.get_children():
+                self.product_tree.delete(child)
 
             records = db.search_products(self.product_name_entry.get(), self.product_price_entry.get(),
                                          self.in_stock_entry.get(), self.description_entry.get())
@@ -509,7 +508,7 @@ class ProductsMenu:
                 product_info = "{}\n{}\n{}".format(record[1], record[2], record[3])
 
             # window asking to delete
-            answer = tkinter.messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(product_info))
+            answer = messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(product_info))
             if answer == 'yes':
                 db.delete_product(selected_record[PRODUCT_COLUMNS[0]], 0)
                 # refreshing all
@@ -602,7 +601,6 @@ class ProductsMenu:
         self.frame.destroy()
         self.entry_frame.destroy()
         self.listbox_frame.destroy()
-        my_config.my_id = -1
         application = login_window.LoginWindow(self.master)
         application.initialize_login_window()
 
@@ -843,7 +841,7 @@ class OrdersMenu:
             return
 
         # window asking to delete
-        answer = tkinter.messagebox.askquestion('myShop DBMS', 'Delete:\n')
+        answer = messagebox.askquestion('myShop DBMS', 'Delete:\n')
         if answer == 'yes':
             selected_record = self.order_tree.set(self.order_tree.selection())
             db.delete_order(selected_record[ORDER_COLUMNS[0]])
@@ -859,8 +857,8 @@ class OrdersMenu:
                                    self.quantity_entry.get(), self.payment_status_entry.get(),
                                    self.send_status_entry.get(), self.location_entry.get())
 
-        for i in self.order_tree.get_children():
-            self.order_tree.delete(i)
+        for child in self.order_tree.get_children():
+            self.order_tree.delete(child)
         for record in records:
             self.order_tree.insert('', tk.END, values=[
                 record[0], record[3], record[5], record[6], record[8], record[7]])
@@ -892,14 +890,14 @@ class OrdersMenu:
 
             # inserting customer info
             record = db.return_customer(order_data[1])
-            for i in self.customers_tree.get_children():
-                self.customers_tree.delete(i)
+            for child in self.customers_tree.get_children():
+                self.customers_tree.delete(child)
             self.customers_tree.insert('', tk.END, values=[record[0], record[3], record[5]])
 
             # inserting product info
             record = db.return_product(order_data[2])
-            for i in self.product_tree.get_children():
-                self.product_tree.delete(i)
+            for child in self.product_tree.get_children():
+                self.product_tree.delete(child)
             self.product_tree.insert('', tk.END, values=record)
 
     def product_list_manager(self, event):
@@ -916,8 +914,8 @@ class OrdersMenu:
 
             # inserting selected customer Orders
             records = db.return_product_orders(current_record[PRODUCT_COLUMNS[0]])
-            for i in self.order_tree.get_children():
-                self.order_tree.delete(i)
+            for child in self.order_tree.get_children():
+                self.order_tree.delete(child)
 
             for record in records:
                 self.order_tree.insert('', tk.END, values=[
@@ -937,8 +935,8 @@ class OrdersMenu:
 
             # inserting selected customer Orders
             records = db.return_customer_orders(current_record[CUSTOMER_COLUMNS[0]])
-            for i in self.order_tree.get_children():
-                self.order_tree.delete(i)
+            for child in self.order_tree.get_children():
+                self.order_tree.delete(child)
 
             for record in records:
                 self.order_tree.insert('', tk.END, values=[
@@ -981,6 +979,5 @@ class OrdersMenu:
         self.entry_frame.destroy()
         self.orders_frame.destroy()
         self.products_customers_frame.destroy()
-        my_config.my_id = -1
         application = login_window.LoginWindow(self.master)
         application.initialize_login_window()

@@ -8,6 +8,7 @@ import my_config
 
 # Module Constants:
 LOGIN_WINDOW_SIZE = "300x200"
+FALSE_LOG_IN_VALUE = -1
 
 
 class LoginWindow:
@@ -73,8 +74,8 @@ class LoginWindow:
             self.error_label.grid(row=2, column=1)
 
         else:
-            my_config.my_id, perm = db.customer_perm(self.login_entry.get(), self.password_entry.get())
-            if perm == -1 or my_config.my_id == -1:
+            my_config.MY_ID, perm = db.customer_perm(self.login_entry.get(), self.password_entry.get())
+            if perm == FALSE_LOG_IN_VALUE or my_config.MY_ID == FALSE_LOG_IN_VALUE:
                 self.error_label = tk.Label(self.frame, text="try again..",
                                             fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
                 self.error_label.grid(row=2, column=1)
@@ -153,8 +154,13 @@ class LoginWindow:
         else:
             # checking if customer is in DB
             exist = db.is_customer_exists(self.login_entry.get(), self.email_entry.get())
-            if exist:
-                self.error_label = tk.Label(self.frame, text="'{}' exists".format(exist),
+            if exist == my_config.CUSTOMER_EMAIL:
+                self.error_label = tk.Label(self.frame, text="Email exists.".format(exist),
+                                            fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
+                self.error_label.grid(row=5, column=1)
+
+            elif exist == my_config.CUSTOMER_LOGIN:
+                self.error_label = tk.Label(self.frame, text="Login exists.".format(exist),
                                             fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
                 self.error_label.grid(row=5, column=1)
             else:

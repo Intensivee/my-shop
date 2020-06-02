@@ -1,6 +1,6 @@
 """Module contains major customer classes"""
+from tkinter import messagebox
 import tkinter as tk
-import tkinter.messagebox
 from tkinter.ttk import Treeview
 
 import db_manager as db
@@ -15,6 +15,7 @@ PRODUCT_COLUMNS_SIZE = (25, 150, 50, 50)
 
 MY_ORDERS_COLUMNS = ('Id', 'Product name', 'Quantity', 'Total price')
 MY_ORDERS_COLUMNS_SIZE = (25, 150, 60, 90)
+
 
 class CustomerApp:
     """Main customer window."""
@@ -140,14 +141,14 @@ class CustomerApp:
             self.error_message("'location' missing")
 
         # checking if customer and product exists
-        elif not db.is_customer_id_exist(my_config.my_id) or not db.is_product_id_exists(
+        elif not db.is_customer_id_exist(my_config.MY_ID) or not db.is_product_id_exists(
                 self.id_product_entry.get()):
             self.error_message("product or customer id not Exists")
 
         # function itself check if there is enough products, and count total price (quantity*price)
-        elif db.add_order(my_config.my_id, self.id_product_entry.get(), self.quantity_entry.get(),
+        elif db.add_order(my_config.MY_ID, self.id_product_entry.get(), self.quantity_entry.get(),
                           self.location_entry.get()):
-            tkinter.messagebox.showinfo("Mendiona bytes", 'successfully added.')
+            messagebox.showinfo("Mendiona bytes", 'successfully added.')
             self.list_products()
         else:
             self.error_message("not enough products in stock.")
@@ -170,8 +171,7 @@ class CustomerApp:
             # creating Message instead of Label (description might be long)
             description = db.return_product(self.id_product_entry.get())[4]
             self.error_label = tk.Message(self.function_frame3, text="Description: {}".format(description),
-                                          bg=my_config.BACKGROUND, fg=my_config.ERROR_FOREGROUND,
-                                          width=300)
+                                          bg=my_config.BACKGROUND, width=300)
             self.error_label.grid(row=5, column=0)
         else:
             self.error_message("Product not exist.")
@@ -200,9 +200,9 @@ class CustomerApp:
             self.function_frame2.pack(side=tk.TOP)
 
             # creating Message instead of Label (might be long)
-            order_info = """quantity: \t{}\ntotal_price: \t{}\npayment_status: \t{}
-send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
-                .format(record[3], record[4], record[5], record[6], record[7], record[8])
+            order_info = ("quantity: \t{}\ntotal_price: \t{}\npayment_status: \t{}\n"
+                          "send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n"
+                          ).format(record[3], record[4], record[5], record[6], record[7], record[8])
 
             self.error_label = tk.Message(self.function_frame2, text=order_info,
                                           bg=my_config.BACKGROUND, width=300)
@@ -246,7 +246,7 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
         self.my_orders_tree.bind('<ButtonRelease-1>', self.order_selection)
 
         # adding records from DB to treeview
-        records = db.orders_product_info(my_config.my_id)
+        records = db.orders_product_info(my_config.MY_ID)
         for record in records:
             self.my_orders_tree.insert('', tk.END, values=[record[0], record[1], record[2], record[3]])
 
@@ -265,7 +265,6 @@ send_status: \t{}\noder_date: \t{}\nlocation: \t{}\n""" \
 
     def log_off(self):
         """Returns User to logging window."""
-        my_config.my_id = -1
         if self.frame:
             self.frame.destroy()
         if self.function_frame:
@@ -327,13 +326,13 @@ class AccountEdit:
         self.cancel_button.grid(row=2, column=2, padx=(10, 0))
 
         # getting customer info from DB
-        customer_info = db.return_customer(my_config.my_id)
+        customer_info = db.return_customer(my_config.MY_ID)
         if customer_info:
             self.name_entry.insert(tk.END, customer_info[3])
             self.phone_entry.insert(tk.END, customer_info[4])
             self.email_entry.insert(tk.END, customer_info[5])
         else:
-            tkinter.messagebox.showinfo("Mendiona bytes", 'ERROR: WRONG ID!!!')
+            messagebox.showinfo("Mendiona bytes", 'ERROR: WRONG ID!!!')
             self.exit()
 
     def set_change(self):
@@ -346,7 +345,7 @@ class AccountEdit:
             self.error_message('minimum password length is 6')
 
         # checking if all required entries are filled properly
-        elif self.password_entry.get() != db.return_customer(my_config.my_id)[2]:
+        elif self.password_entry.get() != db.return_customer(my_config.MY_ID)[2]:
             self.error_message('password does not match.')
         elif not self.name_entry.get():
             self.error_message('Can not update empty name.')
@@ -360,13 +359,13 @@ class AccountEdit:
 
             if self.new_password_entry:
                 # passing new password
-                db.edit_customer(my_config.my_id, self.new_password_entry.get(), self.name_entry.get(),
+                db.edit_customer(my_config.MY_ID, self.new_password_entry.get(), self.name_entry.get(),
                                  self.email_entry.get(),
                                  self.phone_entry.get())
             else:
                 # passing old password to function (no change)
-                db.edit_customer(my_config.my_id,
-                                 db.return_customer(my_config.my_id)[2], self.name_entry.get(),
+                db.edit_customer(my_config.MY_ID,
+                                 db.return_customer(my_config.MY_ID)[2], self.name_entry.get(),
                                  self.email_entry.get(), self.phone_entry.get())
 
             self.error_message("Account has been updated.")
