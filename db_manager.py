@@ -106,7 +106,7 @@ def return_customer(customer_id):
         return cursor.fetchone()
 
 
-def search_customer(login="", name="", phone="", email="", perm=""):
+def search_customer(login="", name="", phone="", email="", permission=""):
     """Returns customers that meet at least 1 of passed args."""
     with MY_CONNECTION as connection:
         cursor = connection.cursor()
@@ -116,34 +116,17 @@ def search_customer(login="", name="", phone="", email="", perm=""):
             FROM Customers
             WHERE login=? OR customer_name=? OR phone=? OR email=? or perm=?
             """,
-            (login, name, phone, email, perm))
+            (login, name, phone, email, permission))
         return cursor.fetchall()
 
 
-def delete_customer(customer_id, check_if_exists=1):
-    """Delete or check if customer exists.
-
-    when 0 passed it delete's the customer.
-    when 1 passed it returns customer or None if not existing."""
+def delete_customer(customer_id):
+    """Deletes customer."""
     with MY_CONNECTION as connection:
-        cursor = connection.cursor()
-        if check_if_exists == 1:
-            cursor.execute(
-                """
-                SELECT login, customer_name, email
-                FROM Customers
-                WHERE id_customer=?
-                """,
-                (customer_id,))
-            return cursor.fetchone()
-
-        if check_if_exists == 0:
-            connection.execute("DELETE FROM Customers WHERE id_customer=?", (customer_id,))
-            return True
-        return False
+        connection.execute("DELETE FROM Customers WHERE id_customer=?", (customer_id,))
 
 
-def update_customer(customer_id, login, name, email, phone="", perm=0):
+def update_customer(customer_id, login, name, email, phone="", permission=0):
     """Update's Customer by given id."""
     with MY_CONNECTION as connection:
         connection.execute(
@@ -152,7 +135,7 @@ def update_customer(customer_id, login, name, email, phone="", perm=0):
             SET login=?, customer_name=?, phone=?, email=?, perm=?
             WHERE id_customer=?
             """,
-            (login, name, phone, email, perm, customer_id))
+            (login, name, phone, email, permission, customer_id))
 
 
 def edit_customer(customer_id, password, name, email, phone):
@@ -227,11 +210,10 @@ def return_products():
             SELECT id_product, product_name, product_price, in_stock, description
             FROM Products
             """)
-        records = cursor.fetchall()
-        return records
+        return cursor.fetchall()
 
 
-def add_product(name, price, stock, desc):
+def add_product(name, price, stock, description):
     """Adding new product to DB."""
     with MY_CONNECTION as connection:
         connection.execute(
@@ -240,21 +222,21 @@ def add_product(name, price, stock, desc):
             (product_name, product_price, in_stock, description)
             VALUES (?,?,?,?)
             """,
-            (name, price, stock, desc,))
+            (name, price, stock, description,))
 
 
-def search_products(name='', price='', stock='', desc=''):
+def search_products(name='', price='', stock='', description=''):
     """Returns products that meet at least 1 of passed args."""
     with MY_CONNECTION as connection:
         cursor = connection.cursor()
-        if desc:
+        if description:
             cursor.execute(
                 """
                 SELECT id_product, product_name, product_price, in_stock, description
                 FROM Products
                 WHERE product_name=? OR product_price=? OR in_stock=? OR description=?
                 """,
-                (name, price, stock, desc,))
+                (name, price, stock, description,))
         else:
             cursor.execute(
                 """
@@ -267,30 +249,13 @@ def search_products(name='', price='', stock='', desc=''):
 
 
 # if sec value is not passed it only check and return the value if it exists
-def delete_product(product_id, check_if_exists=1):
-    """Delete or check if product exists.
-
-    when 0 passed it delete's the product.
-    when 1 passed it returns product or False depending on if it exists."""
+def delete_product(product_id):
+    """Delete product by it's id."""
     with MY_CONNECTION as connection:
-        cursor = connection.cursor()
-        if check_if_exists == 1:
-            cursor.execute(
-                """
-                SELECT id_product, product_name, product_price, in_stock, description
-                FROM Products
-                WHERE id_product=?
-                """,
-                (product_id,))
-            return cursor.fetchone()
-
-        if check_if_exists == 0:
-            connection.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
-            return True
-        return True
+        connection.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
 
 
-def update_product(product_id, name, price, stock, desc):
+def update_product(product_id, name, price, stock, description):
     """Updates Customer by given id."""
     with MY_CONNECTION as connection:
         connection.execute(
@@ -299,7 +264,7 @@ def update_product(product_id, name, price, stock, desc):
             SET product_name=?, product_price=?, in_stock=?, description=?
             WHERE id_product=?
             """,
-            (name, price, stock, desc, product_id,))
+            (name, price, stock, description, product_id,))
 
 
 def return_orders():

@@ -5,7 +5,7 @@ import unittest
 import admin_window
 
 
-class TestProductsMenu(unittest.TestCase):
+class ProductsMenuTest(unittest.TestCase):
 
     def setUp(self):
         root = tk.Tk()
@@ -34,7 +34,7 @@ class TestProductsMenu(unittest.TestCase):
         self.assertTrue(self.application.product_tree.item(child)['values'][1] == "LG G6")
 
 
-class TestCustomersMenu(unittest.TestCase):
+class CustomersMenuTest(unittest.TestCase):
 
     def setUp(self):
         root = tk.Tk()
@@ -65,7 +65,7 @@ class TestCustomersMenu(unittest.TestCase):
         self.assertTrue(self.application.customers_tree.item(child)['values'][1] == "admin")
 
 
-class TestOrdersMenu(unittest.TestCase):
+class OrdersMenuTest(unittest.TestCase):
 
     def setUp(self):
         root = tk.Tk()

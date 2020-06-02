@@ -195,19 +195,16 @@ class CustomersMenu:
 
         # finding selected Customer
         selected_record = self.customers_tree.set(self.customers_tree.selection())
-        records = db.delete_customer(selected_record[CUSTOMER_COLUMN_FULL[0]], 1)
+        record = db.return_customer(selected_record[CUSTOMER_COLUMN_FULL[0]])
 
         # if there is record in DB with such id
-        if records:
-            # there has to be for loop, because single line return error: 'list out of range'
-            customer_info = ''
-            for record in records:
-                customer_info = "{}\n{}\n{}".format(record[0], record[1], record[2])
+        if record:
+            customer_info = "{}\n{}\n{}".format(record[0], record[1], record[2])
 
             # window asking to delete
             answer = messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(customer_info))
             if answer == 'yes':
-                db.delete_customer(selected_record[CUSTOMER_COLUMN_FULL[0]], 0)
+                db.delete_customer(selected_record[CUSTOMER_COLUMN_FULL[0]])
                 # refreshing all
                 self.initialize_menu()
 
@@ -498,19 +495,16 @@ class ProductsMenu:
 
         # finding selected product
         selected_record = self.product_tree.set(self.product_tree.selection())
-        records = db.delete_product(selected_record[PRODUCT_COLUMNS[0]], 1)
+        record = db.return_product(selected_record[PRODUCT_COLUMNS[0]])
 
         # if there is record in DB with such id
-        if records:
-            # there has to be for loop, because single line return error: 'list out of range'
-            product_info = ''
-            for record in records:
-                product_info = "{}\n{}\n{}".format(record[1], record[2], record[3])
+        if record:
+            product_info = "{}\n{}\n{}".format(record[1], record[2], record[3])
 
             # window asking to delete
             answer = messagebox.askquestion('myShop DBMS', "Delete:\n{}".format(product_info))
             if answer == 'yes':
-                db.delete_product(selected_record[PRODUCT_COLUMNS[0]], 0)
+                db.delete_product(selected_record[PRODUCT_COLUMNS[0]])
                 # refreshing all
                 self.initialize_menu()
 
