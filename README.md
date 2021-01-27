@@ -1,4 +1,4 @@
-# My-shop
+# my-shop
 GUI APP written in Python using tkinter and sqlite.
 Application is secured for inserting incorrect data.
 All methods, modules and classes have proper docstrings.
